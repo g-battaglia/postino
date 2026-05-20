@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools>=75.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "postino"
+version = "0.1.0"
+description = "GDPR-first email marketing for Django. Self-hosted, TOML-configured, server-side rendered."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.12"
+authors = [{ name = "Giacomo Battaglia", email = "g.btt.dev@gmail.com" }]
+keywords = ["django", "email", "marketing", "gdpr", "newsletter"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Framework :: Django",
+    "Framework :: Django :: 6.0",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Communications :: Email",
+]
+
+dependencies = [
+    "django>=6.0,<7.0",
+    "psycopg[binary]>=3.2",
+    "dj-database-url>=2.3",
+    "resend>=2.0",
+    "pydantic>=2.10",
+    "django-htmx>=1.21",
+    "click>=8.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.8",
+    "pytest>=8.0",
+    "pytest-django>=4.9",
+    "coverage>=7.0",
+]
+ses = ["boto3>=1.35"]
+mailgun = ["requests>=2.32"]
+
+[project.scripts]
+postino = "cli.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/g-battaglia/postino"
+Repository = "https://github.com/g-battaglia/postino"
+Issues = "https://github.com/g-battaglia/postino/issues"
+
+[tool.setuptools.packages.find]
+include = ["cli*", "apps*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+"*/migrations/*" = ["E501", "I001"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "tests.settings"
+python_files = ["tests.py", "test_*.py"]

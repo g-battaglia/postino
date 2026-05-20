@@ -1,0 +1,97 @@
+{% load i18n %}<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>{% block subject %}{% endblock %}</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+</head>
+<body style="margin:0; padding:0; background-color:#f5f5f5; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;">
+  <center style="width:100%; background-color:#f5f5f5;">
+    <!--[if mso | IE]>
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" align="center" style="width:600px;">
+    <tr>
+    <td>
+    <![endif]-->
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" align="center" style="max-width:600px; width:100%; margin:0 auto; background-color:#ffffff;">
+      <!-- Preheader (hidden preview text) -->
+      <tr>
+        <td style="font-size:0; line-height:0; display:none; max-height:0; mso-hide:all;">
+          {% block preheader %}{% endblock %}
+        </td>
+      </tr>
+
+      <!-- Header bar -->
+      <tr>
+        <td style="background-color:{{ primary_color|default:'#6366f1' }}; padding:24px 32px; text-align:center;">
+          {% block header %}
+          <h1 style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; font-size:22px; font-weight:700; color:#ffffff; text-decoration:none;">
+            {{ app_name|default:"Postino" }}
+          </h1>
+          {% endblock %}
+        </td>
+      </tr>
+
+      <!-- Greeting -->
+      <tr>
+        <td style="padding:32px 32px 0;">
+          {% if subscriber_name %}
+          <p style="margin:0 0 16px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; font-size:16px; line-height:1.5; color:#111827;">
+            {% blocktrans with name=subscriber_name %}Hi {{ name }},{% endblocktrans %}
+          </p>
+          {% endif %}
+        </td>
+      </tr>
+
+      <!-- Main content -->
+      <tr>
+        <td style="padding:0 32px 32px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; font-size:16px; line-height:1.6; color:#374151;">
+          {% block content %}{% endblock %}
+        </td>
+      </tr>
+
+      <!-- Divider -->
+      <tr>
+        <td style="padding:0 32px;">
+          <hr style="border:none; border-top:1px solid #e5e7eb; margin:0;">
+        </td>
+      </tr>
+
+      <!-- Footer -->
+      <tr>
+        <td style="padding:24px 32px 32px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; font-size:13px; line-height:1.5; color:#6b7280; text-align:center;">
+          {% block footer_extra %}{% endblock %}
+
+          <p style="margin:0 0 8px;">
+            {% blocktrans with name=app_name|default:"Postino" %}You received this email because you are subscribed to {{ name }}.{% endblocktrans %}
+          </p>
+
+          <p style="margin:0 0 8px;">
+            <a href="{{ unsubscribe_url }}" style="color:{{ primary_color|default:'#6366f1' }}; text-decoration:underline;">{% trans "Unsubscribe" %}</a>
+          </p>
+
+          {% if physical_address %}
+          <p style="margin:0;">
+            {{ physical_address }}
+          </p>
+          {% endif %}
+        </td>
+      </tr>
+    </table>
+    <!--[if mso | IE]>
+    </td>
+    </tr>
+    </table>
+    <![endif]-->
+  </center>
+</body>
+</html>

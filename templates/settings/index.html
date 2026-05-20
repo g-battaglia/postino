@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Settings" %}{% endblock %}
+{% block breadcrumb %}{% trans "Settings" %}{% endblock %}
+{% block page_title %}{% trans "Settings" %}{% endblock %}
+
+{% block page_subtitle %}<span class="text-sm text-gray-500">{% trans "App configuration, email types, and data sources." %}</span>{% endblock %}
+{% block nav_settings_class %}bg-indigo-500/20 text-white{% endblock %}
+
+{% block help_widget %}
+<button onclick="document.getElementById('help-dialog').showModal()"
+        class="fixed bottom-6 right-6 z-50 w-10 h-10 rounded-full bg-indigo-500 hover:bg-indigo-600 text-white shadow-lg flex items-center justify-center text-lg font-semibold transition-colors cursor-pointer"
+        aria-label="{% trans 'Help' %}">?</button>
+<dialog id="help-dialog" class="fixed inset-0 m-auto max-w-md w-[calc(100%-2rem)] rounded-xl border border-gray-200 shadow-2xl p-0 backdrop:bg-black/30">
+  <div class="px-6 pt-5 pb-4">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center flex-shrink-0">
+        {% include "components/icon.html" with name="info" size=16 %}
+      </div>
+      <h3 class="text-base font-semibold text-gray-900 m-0 flex-1">{% trans "Settings" %}</h3>
+      <button onclick="document.getElementById('help-dialog').close()" class="text-gray-400 hover:text-gray-600">
+        {% include "components/icon.html" with name="x" size=18 %}
+      </button>
+    </div>
+    <div class="text-sm text-gray-600 leading-relaxed space-y-2 pl-11">
+      <p>{% trans "View and manage application configuration." %}</p>
+<p>{% trans "<strong>General</strong> — app name, timezone, email provider (read-only from config.toml)." %}</p>
+<p>{% trans "<strong>Email types</strong> — categories like newsletter, product updates. Subscribers consent per type." %}</p>
+<p>{% trans "<strong>Data sources</strong> — external databases synced to import subscribers." %}</p>
+<p>{% trans "<strong>Language</strong> — switch the dashboard language between English and Italian." %}</p>
+    </div>
+  </div>
+  <div class="px-6 py-3 bg-gray-50 border-t border-gray-100 rounded-b-xl">
+    <button onclick="document.getElementById('help-dialog').close()" class="text-sm font-medium text-gray-700 hover:text-gray-900">{% trans "Got it" %}</button>
+  </div>
+</dialog>
+{% endblock %}
+
+{% block content %}
+{# Tab bar #}
+<div class="flex gap-0 border-b border-gray-200 mb-5">
+  <a href="?tab=general"
+     class="px-3 py-2 text-sm font-medium border-b-2 -mb-px
+            {% if tab == 'general' %}text-gray-900 border-indigo-500{% else %}text-gray-500 border-transparent hover:text-gray-700{% endif %}">
+    {% trans "General" %}
+  </a>
+  <a href="?tab=types"
+     class="px-3 py-2 text-sm font-medium border-b-2 -mb-px
+            {% if tab == 'types' %}text-gray-900 border-indigo-500{% else %}text-gray-500 border-transparent hover:text-gray-700{% endif %}">
+    {% trans "Email types" %}
+  </a>
+  <a href="?tab=sources"
+     class="px-3 py-2 text-sm font-medium border-b-2 -mb-px
+            {% if tab == 'sources' %}text-gray-900 border-indigo-500{% else %}text-gray-500 border-transparent hover:text-gray-700{% endif %}">
+    {% trans "Data sources" %}
+  </a>
+  <a href="?tab=language"
+     class="px-3 py-2 text-sm font-medium border-b-2 -mb-px
+            {% if tab == 'language' %}text-gray-900 border-indigo-500{% else %}text-gray-500 border-transparent hover:text-gray-700{% endif %}">
+    {% trans "Language" %}
+  </a>
+</div>
+
+{% if tab == "general" %}
+{# ── General tab ────────────────────────────────────────── #}
+<div class="space-y-6">
+  <div class="bg-white rounded-lg border border-gray-200">
+    <div class="px-5 py-4 border-b border-gray-200">
+      <h2 class="text-sm font-semibold text-gray-900">{% trans "Application" %}</h2>
+    </div>
+    <div class="p-5 flex flex-col gap-4">
+      <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1.5">{% trans "App name" %}</label>
+        <input type="text" value="{{ general.app_name }}" readonly
+               class="w-full h-9 px-3 border border-gray-300 rounded-md bg-gray-50 text-sm text-gray-900 font-medium">
+        <p class="text-xs text-gray-500 mt-1">{% trans "Configured in config.toml [branding] section." %}</p>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1.5">{% trans "Timezone" %}</label>
+          <input type="text" value="{{ general.timezone }}" readonly
+                 class="w-full h-9 px-3 border border-gray-300 rounded-md bg-gray-50 text-sm text-gray-900 font-mono">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1.5">{% trans "Base URL" %}</label>
+          <input type="text" value="{{ general.base_url }}" readonly
+                 class="w-full h-9 px-3 border border-gray-300 rounded-md bg-gray-50 text-sm text-gray-900 font-mono">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-lg border border-gray-200">
+    <div class="px-5 py-4 border-b border-gray-200">
+      <h2 class="text-sm font-semibold text-gray-900">{% trans "Email provider" %}</h2>
+    </div>
+    <div class="p-5">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">{% trans "Provider" %}</label>
+          <span class="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-mono">{{ general.provider }}</span>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">{% trans "From name" %}</label>
+          <span class="text-sm text-gray-900">{{ general.from_name }}</span>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">{% trans "From email" %}</label>
+          <span class="text-sm text-gray-900 font-mono">{{ general.from_email }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-lg border border-gray-200">
+    <div class="px-5 py-4 border-b border-gray-200">
+      <h2 class="text-sm font-semibold text-gray-900">{% trans "GDPR & Privacy" %}</h2>
+    </div>
+    <div class="p-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">{% trans "Double opt-in" %}</label>
+          <span class="text-gray-900">{% if general.require_double_optin %}{% trans "Required" %}{% else %}{% trans "Disabled" %}{% endif %}</span>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">{% trans "Retention (unsubscribed)" %}</label>
+          <span class="text-gray-900 font-mono">{{ general.unsubscribed_retention_days }} {% trans "days" %}</span>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">{% trans "Open tracking" %}</label>
+          <span class="text-gray-900">{% if general.enable_open_tracking %}{% trans "Enabled" %}{% else %}{% trans "Disabled (default)" %}{% endif %}</span>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">{% trans "Click tracking" %}</label>
+          <span class="text-gray-900">{% if general.enable_click_tracking %}{% trans "Enabled" %}{% else %}{% trans "Disabled (default)" %}{% endif %}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% elif tab == "types" %}
+{# ── Email Types tab ────────────────────────────────────── #}
+<div class="bg-white rounded-lg border border-gray-200">
+  <div class="flex items-center px-4 py-3 border-b border-gray-200">
+    <span class="text-sm text-gray-500">{{ email_types|length }} {% trans "email types" %}</span>
+    <div class="ml-auto">
+      <a href="{% url 'admin:consent_emailtype_add' %}"
+         class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-indigo-500 rounded-md hover:bg-indigo-600">
+        {% include "components/icon.html" with name="plus" size=12 %}
+        {% trans "Add email type" %}
+      </a>
+    </div>
+  </div>
+  <table class="w-full text-sm">
+    <thead>
+      <tr class="text-left text-[11.5px] uppercase tracking-wide text-gray-500 bg-gray-50 border-b border-gray-200">
+        <th class="px-4 py-2.5 font-medium">{% trans "Slug" %}</th>
+        <th class="px-4 py-2.5 font-medium">{% trans "Name" %}</th>
+        <th class="px-4 py-2.5 font-medium">{% trans "Description" %}</th>
+        <th class="px-4 py-2.5 font-medium">{% trans "Transactional" %}</th>
+        <th class="px-4 py-2.5 font-medium">{% trans "Active" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for et in email_types %}
+      <tr class="border-b border-gray-50">
+        <td class="px-4 py-3 font-mono text-xs text-gray-700">{{ et.slug }}</td>
+        <td class="px-4 py-3 text-gray-900">{{ et.name }}</td>
+        <td class="px-4 py-3 text-gray-500">{{ et.description|default:"—" }}</td>
+        <td class="px-4 py-3">
+          {% if et.is_transactional %}
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-indigo-50 text-indigo-700">{% trans "transactional" %}</span>
+          {% else %}<span class="text-gray-400">—</span>{% endif %}
+        </td>
+        <td class="px-4 py-3">
+          {% if et.is_active %}{% include "components/status_badge.html" with status="active" %}
+          {% else %}{% include "components/status_badge.html" with status="paused" %}{% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="px-4 py-12 text-center text-gray-500">{% trans "No email types configured yet." %}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% elif tab == "sources" %}
+{# ── Data Sources tab ───────────────────────────────────── #}
+<div class="bg-white rounded-lg border border-gray-200">
+  <div class="flex items-center px-5 py-4 border-b border-gray-200">
+    <h2 class="text-sm font-semibold text-gray-900">{% trans "Data sources" %}</h2>
+    <span class="ml-2 text-xs text-gray-500">{% trans "configured in config.toml" %}</span>
+  </div>
+  {% for source in data_sources %}
+  <div class="flex items-center gap-3 px-5 py-3.5 border-b border-gray-50">
+    <div class="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500">
+      {% include "components/icon.html" with name="db" size=16 %}
+    </div>
+    <div class="flex-1 min-w-0">
+      <div class="text-sm font-medium text-gray-900">{{ source.name }}</div>
+      <div class="text-xs text-gray-500">{{ source.source_type }}</div>
+    </div>
+    <div class="text-xs text-gray-500">
+      {% if source.last_sync_at %}
+        {% trans "last sync" %} · <span class="font-mono text-gray-900">{{ source.last_sync_at|timesince }} {% trans "ago" %}</span>
+      {% else %}
+        <span class="text-gray-400">{% trans "never synced" %}</span>
+      {% endif %}
+    </div>
+    {% if source.is_active %}{% include "components/status_badge.html" with status="active" %}
+    {% else %}{% include "components/status_badge.html" with status="paused" %}{% endif %}
+  </div>
+  {% empty %}
+  <div class="px-5 py-12 text-center text-sm text-gray-500">
+    {% trans "No data sources configured. Add sources in config.toml [sources] section." %}
+  </div>
+  {% endfor %}
+</div>
+
+{% elif tab == "language" %}
+{# ── Language tab ───────────────────────────────────────── #}
+<div class="bg-white rounded-lg border border-gray-200">
+  <div class="px-5 py-4 border-b border-gray-200">
+    <h2 class="text-sm font-semibold text-gray-900">{% trans "Dashboard language" %}</h2>
+    <p class="text-xs text-gray-500 mt-1">{% trans "Choose your preferred language for the dashboard interface." %}</p>
+  </div>
+  <form method="post" action="{% url 'core:set_language' %}" class="p-5">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{% url 'core:settings' %}?tab=language">
+    <div class="flex flex-col gap-2">
+      {% for lang_code, lang_name in available_languages %}
+      <label class="flex items-center gap-3 px-4 py-3 rounded-lg border cursor-pointer
+                    {% if lang_code == current_language %}border-indigo-500 bg-indigo-50{% else %}border-gray-200 hover:bg-gray-50{% endif %}">
+        <input type="radio" name="language" value="{{ lang_code }}"
+               {% if lang_code == current_language %}checked{% endif %}
+               class="accent-indigo-500">
+        <div>
+          <div class="text-sm font-medium text-gray-900">{{ lang_name }}</div>
+          <div class="text-xs text-gray-500">{{ lang_code }}</div>
+        </div>
+        {% if lang_code == current_language %}
+        <span class="ml-auto text-xs font-medium text-indigo-600">{% trans "current" %}</span>
+        {% endif %}
+      </label>
+      {% endfor %}
+    </div>
+    <button type="submit"
+            class="mt-4 inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-md
+                   bg-indigo-500 text-white hover:bg-indigo-600 transition-colors">
+      {% trans "Save language" %}
+    </button>
+  </form>
+</div>
+{% endif %}
+
+{% endblock %}

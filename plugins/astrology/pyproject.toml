@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=75.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "postino-astrology"
+version = "0.1.0"
+description = "Astrology content plugin for Postino — current sky, transits, and moon phases via Astrologer API."
+requires-python = ">=3.12"
+dependencies = ["httpx>=0.27"]
+
+[project.entry-points."postino.plugins"]
+astrology = "postino_astrology.plugin:AstrologyPlugin"

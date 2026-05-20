@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Campaigns" %}{% endblock %}
+
+{% block breadcrumb %}{% trans "Campaigns" %}{% endblock %}
+
+{% block nav_campaigns_class %}bg-indigo-500/20 text-white{% endblock %}
+
+{% block page_title %}{% trans "Campaigns" %}{% endblock %}
+{% block page_subtitle %}
+  <div class="text-[13px] text-gray-500 mt-1">
+    {% blocktrans count counter=total_count %}
+      {{ counter }} campaign total
+    {% plural %}
+      {{ counter }} campaigns total
+    {% endblocktrans %}
+  </div>
+{% endblock %}
+
+{% block page_actions %}
+  <a href="{% url 'campaigns:create' %}"
+     class="inline-flex items-center gap-1.5 px-3 py-[7px] text-[13px] font-medium rounded-md
+            bg-indigo-500 text-white hover:bg-indigo-600 transition-colors">
+    {% include "components/icon.html" with name="plus" size=14 %}
+    {% trans "New Campaign" %}
+  </a>
+{% endblock %}
+
+{% block help_widget %}
+<button onclick="document.getElementById('help-dialog').showModal()"
+        class="fixed bottom-6 right-6 z-50 w-10 h-10 rounded-full bg-indigo-500 hover:bg-indigo-600 text-white shadow-lg flex items-center justify-center text-lg font-semibold transition-colors cursor-pointer"
+        aria-label="{% trans 'Help' %}">?</button>
+<dialog id="help-dialog" class="fixed inset-0 m-auto max-w-md w-[calc(100%-2rem)] rounded-xl border border-gray-200 shadow-2xl p-0 backdrop:bg-black/30">
+  <div class="px-6 pt-5 pb-4">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center flex-shrink-0">
+        {% include "components/icon.html" with name="info" size=16 %}
+      </div>
+      <h3 class="text-base font-semibold text-gray-900 m-0 flex-1">{% trans "Campaigns" %}</h3>
+      <button onclick="document.getElementById('help-dialog').close()" class="text-gray-400 hover:text-gray-600">
+        {% include "components/icon.html" with name="x" size=18 %}
+      </button>
+    </div>
+    <div class="text-sm text-gray-600 leading-relaxed space-y-2 pl-11">
+      <p>{% trans "Campaigns are one-time email sends to a filtered audience." %}</p><p>{% trans "Create a campaign by selecting a template, defining the audience, and scheduling or sending immediately." %}</p><p>{% trans "<strong>Draft</strong> — not yet sent. <strong>Scheduled</strong> — will send at the set time. <strong>Sent</strong> — delivery complete." %}</p>
+    </div>
+  </div>
+  <div class="px-6 py-3 bg-gray-50 border-t border-gray-100 rounded-b-xl">
+    <button onclick="document.getElementById('help-dialog').close()" class="text-sm font-medium text-gray-700 hover:text-gray-900">{% trans "Got it" %}</button>
+  </div>
+</dialog>
+{% endblock %}
+
+{% block content %}
+{# Status filter pills #}
+<div class="flex flex-wrap items-center gap-2 mb-4">
+  <a href="{% url 'campaigns:list' %}"
+     class="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[12.5px] font-medium rounded-md
+            transition-colors
+            {% if not current_status %}bg-indigo-50 text-indigo-700 border border-indigo-200{% else %}bg-white border border-gray-200 text-gray-600 hover:bg-gray-50{% endif %}">
+    {% trans "All" %}
+    <span class="tabular-nums">{{ total_count }}</span>
+  </a>
+  {% for pill in status_pills %}
+  <a href="{% url 'campaigns:list' %}?status={{ pill.value }}"
+     class="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[12.5px] font-medium rounded-md
+            transition-colors
+            {% if pill.active %}bg-indigo-50 text-indigo-700 border border-indigo-200{% else %}bg-white border border-gray-200 text-gray-600 hover:bg-gray-50{% endif %}">
+    {{ pill.label }}
+    <span class="tabular-nums text-gray-400">{{ pill.count }}</span>
+  </a>
+  {% endfor %}
+</div>
+
+{# Filter bar #}
+<div class="bg-white border border-gray-200 rounded-[10px] mb-4">
+  <form method="get" class="flex flex-wrap items-center gap-3 px-4 py-3"
+        id="campaign-filters">
+    {# Search #}
+    <div class="relative flex-1 min-w-[180px]">
+      <div class="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400">
+        {% include "components/icon.html" with name="search" size=14 %}
+      </div>
+      <input type="text" name="q" value="{{ current_q }}"
+             placeholder="{% trans 'Search by name or subject...' %}"
+             hx-get="{% url 'campaigns:list' %}"
+             hx-target="#campaign-table"
+             hx-swap="outerHTML"
+             hx-trigger="keyup changed delay:300ms"
+             hx-include="#campaign-filters"
+             class="w-full h-8 pl-8 pr-3 text-[13px] border border-gray-200 rounded-md
+                    bg-gray-50 focus:bg-white focus:border-indigo-300 focus:ring-1
+                    focus:ring-indigo-200 outline-none transition-colors">
+    </div>
+
+    {# Status filter #}
+    <select name="status"
+            hx-get="{% url 'campaigns:list' %}"
+            hx-target="#campaign-table"
+            hx-swap="outerHTML"
+            hx-include="#campaign-filters"
+            class="h-8 px-2.5 text-[13px] border border-gray-200 rounded-md bg-white
+                   focus:border-indigo-300 focus:ring-1 focus:ring-indigo-200 outline-none
+                   cursor-pointer min-w-[110px]">
+      <option value="">{% trans "All statuses" %}</option>
+      {% for pill in status_pills %}
+      <option value="{{ pill.value }}" {% if pill.active %}selected{% endif %}>
+        {{ pill.label }}
+      </option>
+      {% endfor %}
+    </select>
+
+    {# Clear filters #}
+    {% if current_q or current_status %}
+    <a href="{% url 'campaigns:list' %}"
+       class="text-[12px] text-gray-500 hover:text-gray-700 inline-flex items-center gap-1">
+      {% include "components/icon.html" with name="x" size=12 %}
+      {% trans "Clear" %}
+    </a>
+    {% endif %}
+  </form>
+</div>
+
+{# Campaign table (partial included for HTMX support) #}
+{% include "campaigns/_table.html" %}
+{% endblock %}

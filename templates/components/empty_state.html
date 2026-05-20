@@ -1,0 +1,20 @@
+{% spaceless %}
+{% load i18n %}
+
+<div class="py-16 px-5 text-center text-gray-500">
+  <div class="w-12 h-12 mx-auto mb-3.5 rounded-xl bg-gray-100 text-gray-400 flex items-center justify-center">
+    {% include "components/icon.html" with name=icon|default:"mail" size=20 %}
+  </div>
+  <h3 class="text-gray-900 text-[15px] font-semibold m-0 mb-1">{{ title|default:_("Nothing here yet") }}</h3>
+  <div class="text-[13px]">{{ message|default:"" }}</div>
+  {% if action_url and action_label %}
+  <div class="mt-4">
+    <a href="{{ action_url }}"
+       class="inline-flex items-center gap-1.5 px-3 py-[7px] text-[13px] font-medium rounded-md bg-indigo-500 text-white hover:bg-indigo-600 transition-colors">
+      {% include "components/icon.html" with name="plus" size=14 %}
+      {{ action_label }}
+    </a>
+  </div>
+  {% endif %}
+</div>
+{% endspaceless %}

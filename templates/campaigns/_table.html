@@ -1,0 +1,137 @@
+{% load i18n %}
+<div id="campaign-table" class="bg-white border border-gray-200 rounded-[10px] overflow-hidden">
+  {% if campaigns %}
+  <table class="w-full border-collapse text-[13px]">
+    <thead>
+      <tr>
+        <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                   px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+          {% trans "Campaign" %}
+        </th>
+        <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                   px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+          {% trans "Status" %}
+        </th>
+        <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                   px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+          {% trans "Email Type" %}
+        </th>
+        <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                   px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+          {% trans "Template" %}
+        </th>
+        <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                   px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+          {% trans "Recipients" %}
+        </th>
+        <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                   px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+          {% trans "Scheduled" %}
+        </th>
+        <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                   px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+          {% trans "Created" %}
+        </th>
+        <th class="text-right text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                   px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for camp in campaigns %}
+      <tr class="hover:bg-gray-50 cursor-pointer"
+          onclick="window.location='{% url "campaigns:detail" campaign_id=camp.pk %}'">
+        <td class="px-4 py-3 border-b border-gray-100">
+          <div class="flex flex-col gap-0.5">
+            <span class="font-medium text-gray-900">{{ camp.name }}</span>
+            <span class="text-[11.5px] text-gray-500">{{ camp.subject_line }}</span>
+          </div>
+        </td>
+        <td class="px-4 py-3 border-b border-gray-100">
+          {% include "components/status_badge.html" with status=camp.status %}
+        </td>
+        <td class="px-4 py-3 border-b border-gray-100">
+          <span class="text-[12px] text-gray-600">{{ camp.email_type.name }}</span>
+        </td>
+        <td class="px-4 py-3 border-b border-gray-100">
+          <span class="text-[12px] text-gray-600">{{ camp.template.name }}</span>
+        </td>
+        <td class="px-4 py-3 border-b border-gray-100 text-[12px] text-gray-500 tabular-nums">
+          {{ camp.recipient_count }}
+        </td>
+        <td class="px-4 py-3 border-b border-gray-100 text-[12px] text-gray-500 tabular-nums">
+          {% if camp.scheduled_at %}
+            {{ camp.scheduled_at|date:"M j, Y H:i" }}
+          {% else %}
+            <span class="text-gray-300">&mdash;</span>
+          {% endif %}
+        </td>
+        <td class="px-4 py-3 border-b border-gray-100 text-[12px] text-gray-500 tabular-nums">
+          {{ camp.created_at|date:"M j, Y" }}
+        </td>
+        <td class="px-4 py-3 border-b border-gray-100 text-right">
+          <a href="{% url 'campaigns:detail' campaign_id=camp.pk %}"
+             class="text-gray-400 hover:text-gray-700 inline-flex items-center"
+             onclick="event.stopPropagation()">
+            {% include "components/icon.html" with name="chevRight" size=14 %}
+          </a>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  {# Pagination #}
+  {% if page_obj and page_obj.paginator.num_pages > 1 %}
+  <div class="flex items-center gap-1 px-4 py-3 border-t border-gray-200 text-[13px] bg-white rounded-b-[10px]">
+    <span class="text-gray-500">
+      {% blocktrans with from=page_obj.start_index|default:"0" to=page_obj.end_index|default:"0" total=page_obj.paginator.count %}
+        Showing {{ from }}–{{ to }} of {{ total }}
+      {% endblocktrans %}
+    </span>
+    <span class="flex-1"></span>
+
+    {% if page_obj.has_previous %}
+    <a href="?{% if filter_qs %}{{ filter_qs }}&{% endif %}page={{ page_obj.previous_page_number }}"
+       hx-get="?{% if filter_qs %}{{ filter_qs }}&{% endif %}page={{ page_obj.previous_page_number }}"
+       hx-target="#campaign-table"
+       hx-swap="outerHTML"
+       class="min-w-[28px] h-7 px-2 bg-white border border-gray-200 rounded-[5px]
+              text-[12.5px] text-gray-700 cursor-pointer tabular-nums
+              hover:bg-gray-50 inline-flex items-center justify-center">
+      {% include "components/icon.html" with name="chevLeft" size=12 %}
+    </a>
+    {% else %}
+    <span class="min-w-[28px] h-7 px-2 bg-white border border-gray-200 rounded-[5px]
+                 text-[12.5px] text-gray-400 cursor-not-allowed opacity-40
+                 inline-flex items-center justify-center">
+      {% include "components/icon.html" with name="chevLeft" size=12 %}
+    </span>
+    {% endif %}
+
+    {% if page_obj.has_next %}
+    <a href="?{% if filter_qs %}{{ filter_qs }}&{% endif %}page={{ page_obj.next_page_number }}"
+       hx-get="?{% if filter_qs %}{{ filter_qs }}&{% endif %}page={{ page_obj.next_page_number }}"
+       hx-target="#campaign-table"
+       hx-swap="outerHTML"
+       class="min-w-[28px] h-7 px-2 bg-white border border-gray-200 rounded-[5px]
+              text-[12.5px] text-gray-700 cursor-pointer tabular-nums
+              hover:bg-gray-50 inline-flex items-center justify-center">
+      {% include "components/icon.html" with name="chevRight" size=12 %}
+    </a>
+    {% else %}
+    <span class="min-w-[28px] h-7 px-2 bg-white border border-gray-200 rounded-[5px]
+                 text-[12.5px] text-gray-400 cursor-not-allowed opacity-40
+                 inline-flex items-center justify-center">
+      {% include "components/icon.html" with name="chevRight" size=12 %}
+    </span>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {% else %}
+  <div class="py-12">
+    {% include "components/empty_state.html" with icon="send" title=_("No campaigns found") message=_("Adjust your filters or create a new campaign.") %}
+  </div>
+  {% endif %}
+</div>

@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ template.name }} · {% trans "Templates" %}{% endblock %}
+
+{% block breadcrumb %}
+  <a href="{% url 'templates_mgr:list' %}" class="text-gray-500 hover:text-gray-700">{% trans "Templates" %}</a>
+  {% include "components/icon.html" with name="chevRight" size=12 %}
+  <span class="text-gray-900 font-medium">{{ template.name }}</span>
+{% endblock %}
+
+{% block nav_templates_class %}bg-indigo-500/20 text-white{% endblock %}
+
+{% block page_title %}{{ template.name }}{% endblock %}
+{% block page_subtitle %}
+  <div class="text-[13px] text-gray-500 mt-1">
+    <span class="font-mono text-[12px] bg-gray-100 px-1.5 py-0.5 rounded">{{ template.slug }}</span>
+    <span class="ml-2">{% trans "Updated" %} {{ template.updated_at|date:"M j, Y H:i" }}</span>
+  </div>
+{% endblock %}
+
+{% block page_actions %}
+  <a href="{% url 'templates_mgr:edit' slug=template.slug %}"
+     class="inline-flex items-center gap-1.5 px-3 py-[7px] text-[13px] font-medium rounded-md
+            bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors">
+    {% include "components/icon.html" with name="edit" size=14 %}
+    {% trans "Edit" %}
+  </a>
+{% endblock %}
+
+{% block content %}
+{# Template metadata #}
+<div class="bg-white border border-gray-200 rounded-[10px] p-6 mb-4">
+  <h2 class="text-[15px] font-semibold text-gray-900 m-0 mb-4">{% trans "Template details" %}</h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-[13px]">
+    <div>
+      <div class="text-[11.5px] text-gray-500 uppercase tracking-[0.05em] font-medium mb-1">{% trans "Default subject" %}</div>
+      <div>{{ template.subject_default }}</div>
+    </div>
+    <div>
+      <div class="text-[11.5px] text-gray-500 uppercase tracking-[0.05em] font-medium mb-1">{% trans "Created" %}</div>
+      <div class="tabular-nums">{{ template.created_at|date:"M j, Y H:i" }}</div>
+    </div>
+    <div>
+      <div class="text-[11.5px] text-gray-500 uppercase tracking-[0.05em] font-medium mb-1">{% trans "Has plain text" %}</div>
+      <div>
+        {% if template.text_body %}
+          <span class="text-emerald-600">{% trans "Yes" %}</span>
+        {% else %}
+          <span class="text-gray-400">{% trans "No" %}</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{# Preview #}
+<div class="bg-white border border-gray-200 rounded-[10px] overflow-hidden mb-4">
+  <div class="px-4 py-3 border-b border-gray-200 flex items-center gap-3">
+    <h2 class="text-[15px] font-semibold text-gray-900 m-0">{% trans "Preview" %}</h2>
+    <span class="text-[11.5px] text-gray-400">{% trans "Rendered with sample data" %}</span>
+  </div>
+
+  {% if preview.error %}
+  {# Error panel #}
+  <div class="px-5 py-5">
+    <div class="bg-red-50 border border-red-200 rounded-[8px] px-4 py-3 text-[13px] text-red-700">
+      <div class="flex items-center gap-2 mb-1.5 font-medium">
+        {% include "components/icon.html" with name="warn" size=16 class_extra="text-red-500" %}
+        {% trans "Rendering error" %}
+      </div>
+      <p class="m-0 text-[12.5px]">{{ preview.error }}</p>
+    </div>
+  </div>
+  {% else %}
+  {# Subject preview #}
+  <div class="px-5 pt-4 pb-3 border-b border-gray-100">
+    <div class="text-[11.5px] text-gray-500 uppercase tracking-[0.05em] font-medium mb-1">{% trans "Subject" %}</div>
+    <div class="text-[14px] font-medium text-gray-900">{{ preview.subject }}</div>
+  </div>
+
+  {# HTML preview #}
+  <div class="px-5 pt-4 pb-3 border-b border-gray-100">
+    <div class="text-[11.5px] text-gray-500 uppercase tracking-[0.05em] font-medium mb-1">{% trans "HTML preview" %}</div>
+    <div class="border border-gray-200 rounded-lg overflow-auto max-h-[500px] bg-white">
+      <iframe srcdoc="{{ preview.html|escape }}"
+              class="w-full min-h-[300px] border-0"
+              sandbox="allow-same-origin"
+              title="{% trans 'HTML email preview' %}">
+      </iframe>
+    </div>
+  </div>
+
+  {# Text preview #}
+  {% if preview.text %}
+  <div class="px-5 pt-4 pb-4">
+    <div class="text-[11.5px] text-gray-500 uppercase tracking-[0.05em] font-medium mb-1">{% trans "Plain text preview" %}</div>
+    <pre class="text-[12px] text-gray-700 bg-gray-50 p-3 rounded-lg border border-gray-200 whitespace-pre-wrap m-0 font-mono leading-relaxed max-h-[300px] overflow-auto">{{ preview.text }}</pre>
+  </div>
+  {% endif %}
+  {% endif %}
+</div>
+
+{# Campaigns using this template #}
+{% if campaigns_using %}
+<div class="bg-white border border-gray-200 rounded-[10px] overflow-hidden mb-4">
+  <div class="px-4 py-3 border-b border-gray-200">
+    <h2 class="text-[15px] font-semibold text-gray-900 m-0">{% trans "Campaigns using this template" %}</h2>
+  </div>
+  <table class="w-full border-collapse text-[13px]">
+    <thead>
+      <tr>
+        <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                   px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+          {% trans "Campaign" %}
+        </th>
+        <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                   px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+          {% trans "Status" %}
+        </th>
+        <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                   px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+          {% trans "Email Type" %}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for camp in campaigns_using %}
+      <tr class="hover:bg-gray-50 cursor-pointer"
+          onclick="window.location='{% url "campaigns:detail" campaign_id=camp.pk %}'">
+        <td class="px-4 py-2.5 border-b border-gray-100">
+          <span class="font-medium text-gray-900">{{ camp.name }}</span>
+        </td>
+        <td class="px-4 py-2.5 border-b border-gray-100">
+          {% include "components/status_badge.html" with status=camp.status %}
+        </td>
+        <td class="px-4 py-2.5 border-b border-gray-100">
+          <span class="text-[12px] text-gray-600">{{ camp.email_type.name }}</span>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+{# CLI hints #}
+<div class="bg-gray-50 border border-gray-200 rounded-[8px] px-4 py-3">
+  <div class="text-[12px] text-gray-500 font-medium mb-1">{% trans "CLI commands" %}</div>
+  <div class="space-y-1">
+    <div><code class="text-[12px] text-gray-700 font-mono">postino templates get {{ template.slug }}</code></div>
+    <div><code class="text-[12px] text-gray-700 font-mono">postino templates list</code></div>
+  </div>
+</div>
+{% endblock %}

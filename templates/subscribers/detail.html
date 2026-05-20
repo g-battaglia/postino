@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Subscriber Detail" %}{% endblock %}
+
+{% block breadcrumb %}
+  <a href="{% url 'subscribers:list' %}" class="hover:text-gray-700">{% trans "Subscribers" %}</a>
+  {% include "components/icon.html" with name="chevRight" size=12 %}
+  <span class="text-gray-900 font-medium">{{ subscriber.email }}</span>
+{% endblock %}
+
+{% block nav_subscribers_class %}bg-indigo-500/20 text-white{% endblock %}
+
+{% block page_title %}{{ subscriber.email }}{% endblock %}
+{% block page_subtitle %}
+  <div class="text-[13px] text-gray-500 mt-1">
+    {% include "components/status_badge.html" with status=subscriber.status %}
+    <span class="ml-2 capitalize">{{ subscriber.source }}</span>
+    <span class="mx-1.5 text-gray-300">·</span>
+    <span>{% trans "Created" %} {{ subscriber.created_at|date:"M j, Y" }}</span>
+  </div>
+{% endblock %}
+
+{% block page_actions %}
+  <span class="text-[12px] text-gray-400 font-mono">{{ subscriber.id }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-6">
+
+  {# Left column: profile + consent + unsubscribe #}
+  <div class="flex flex-col gap-6">
+
+    {# Profile card #}
+    <div class="bg-white border border-gray-200 rounded-[10px]">
+      <div class="px-5 py-4 border-b border-gray-200">
+        <h3 class="text-[14px] font-semibold tracking-tight m-0">{% trans "Profile" %}</h3>
+      </div>
+      <div class="px-5 py-4">
+        <dl class="grid grid-cols-[140px_1fr] gap-y-3 text-[13px]">
+          <dt class="text-gray-500">{% trans "Email" %}</dt>
+          <dd class="font-mono text-[12.5px]">{{ subscriber.email }}</dd>
+
+          {% if subscriber.name %}
+          <dt class="text-gray-500">{% trans "Name" %}</dt>
+          <dd>{{ subscriber.name }}</dd>
+          {% endif %}
+
+          <dt class="text-gray-500">{% trans "Source" %}</dt>
+          <dd class="capitalize">{{ subscriber.source }}{% if subscriber.source_id %} <span class="text-gray-400 font-mono text-[11.5px]">({{ subscriber.source_id }})</span>{% endif %}</dd>
+
+          <dt class="text-gray-500">{% trans "Health score" %}</dt>
+          <dd>{% include "components/health_bar.html" with score=subscriber.health_score %}</dd>
+
+          <dt class="text-gray-500">{% trans "Last activity" %}</dt>
+          <dd>{{ subscriber.last_activity_at|date:"M j, Y H:i"|default:_("Never") }}</dd>
+
+          <dt class="text-gray-500">{% trans "IP address" %}</dt>
+          <dd class="font-mono text-[12.5px]">{{ subscriber.ip_address|default:"—" }}</dd>
+
+          <dt class="text-gray-500">{% trans "Created" %}</dt>
+          <dd class="tabular-nums">{{ subscriber.created_at|date:"M j, Y H:i" }}</dd>
+
+          <dt class="text-gray-500">{% trans "Updated" %}</dt>
+          <dd class="tabular-nums">{{ subscriber.updated_at|date:"M j, Y H:i" }}</dd>
+
+          {% if subscriber.double_optin_confirmed_at %}
+          <dt class="text-gray-500">{% trans "Double opt-in" %}</dt>
+          <dd class="text-emerald-600 tabular-nums">{{ subscriber.double_optin_confirmed_at|date:"M j, Y H:i" }}</dd>
+          {% endif %}
+        </dl>
+      </div>
+    </div>
+
+    {# Consent records #}
+    <div class="bg-white border border-gray-200 rounded-[10px]">
+      <div class="px-5 py-4 border-b border-gray-200">
+        <h3 class="text-[14px] font-semibold tracking-tight m-0">{% trans "Consent history" %}</h3>
+      </div>
+      {% if consent_records %}
+      <table class="w-full border-collapse text-[13px]">
+        <thead>
+          <tr>
+            <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                       px-4 py-2.5 bg-gray-50 border-b border-gray-200">{% trans "Action" %}</th>
+            <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                       px-4 py-2.5 bg-gray-50 border-b border-gray-200">{% trans "Email type" %}</th>
+            <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                       px-4 py-2.5 bg-gray-50 border-b border-gray-200">{% trans "Method" %}</th>
+            <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                       px-4 py-2.5 bg-gray-50 border-b border-gray-200">{% trans "Date" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for record in consent_records %}
+          <tr class="hover:bg-gray-50">
+            <td class="px-4 py-2.5 border-b border-gray-100">
+              {% if record.action == "grant" %}
+              <span class="text-emerald-600 font-medium">{% trans "Grant" %}</span>
+              {% else %}
+              <span class="text-red-600 font-medium">{% trans "Withdraw" %}</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-2.5 border-b border-gray-100">
+              {{ record.email_type|default:"*" }}
+            </td>
+            <td class="px-4 py-2.5 border-b border-gray-100 text-gray-500">
+              {{ record.method }}
+            </td>
+            <td class="px-4 py-2.5 border-b border-gray-100 text-gray-500 tabular-nums">
+              {{ record.created_at|date:"M j, Y H:i" }}
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="px-5 py-6 text-center text-gray-400 text-[13px]">
+        {% trans "No consent records." %}
+      </div>
+      {% endif %}
+    </div>
+
+    {# Unsubscribe events #}
+    <div class="bg-white border border-gray-200 rounded-[10px]">
+      <div class="px-5 py-4 border-b border-gray-200">
+        <h3 class="text-[14px] font-semibold tracking-tight m-0">{% trans "Unsubscribe events" %}</h3>
+      </div>
+      {% if unsubscribe_events %}
+      <table class="w-full border-collapse text-[13px]">
+        <thead>
+          <tr>
+            <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                       px-4 py-2.5 bg-gray-50 border-b border-gray-200">{% trans "Method" %}</th>
+            <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                       px-4 py-2.5 bg-gray-50 border-b border-gray-200">{% trans "Email type" %}</th>
+            <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                       px-4 py-2.5 bg-gray-50 border-b border-gray-200">{% trans "IP" %}</th>
+            <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                       px-4 py-2.5 bg-gray-50 border-b border-gray-200">{% trans "Date" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for event in unsubscribe_events %}
+          <tr class="hover:bg-gray-50">
+            <td class="px-4 py-2.5 border-b border-gray-100">{{ event.method }}</td>
+            <td class="px-4 py-2.5 border-b border-gray-100 text-gray-500">
+              {{ event.email_type|default:"—" }}
+            </td>
+            <td class="px-4 py-2.5 border-b border-gray-100 text-gray-500 font-mono text-[12px]">
+              {{ event.ip_address|default:"—" }}
+            </td>
+            <td class="px-4 py-2.5 border-b border-gray-100 text-gray-500 tabular-nums">
+              {{ event.created_at|date:"M j, Y H:i" }}
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="px-5 py-6 text-center text-gray-400 text-[13px]">
+        {% trans "No unsubscribe events." %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {# Right column: tags + metadata + CLI hint #}
+  <div class="flex flex-col gap-6">
+
+    {# Tags #}
+    <div class="bg-white border border-gray-200 rounded-[10px]">
+      <div class="px-5 py-4 border-b border-gray-200">
+        <h3 class="text-[14px] font-semibold tracking-tight m-0">{% trans "Tags" %}</h3>
+      </div>
+      <div class="px-5 py-4">
+        {% if subscriber_tags %}
+        <div class="flex flex-wrap gap-1.5">
+          {% for tag in subscriber_tags %}
+          {% include "components/tag.html" with name=tag.display_name color="indigo" %}
+          {% endfor %}
+        </div>
+        {% else %}
+        <span class="text-[13px] text-gray-400">{% trans "No tags." %}</span>
+        {% endif %}
+      </div>
+    </div>
+
+    {# Metadata #}
+    <div class="bg-white border border-gray-200 rounded-[10px]">
+      <div class="px-5 py-4 border-b border-gray-200">
+        <h3 class="text-[14px] font-semibold tracking-tight m-0">{% trans "Metadata" %}</h3>
+      </div>
+      <div class="px-5 py-4">
+        {% if subscriber.metadata %}
+        <pre class="text-[12px] text-gray-700 bg-gray-50 rounded-md p-3 overflow-x-auto m-0 whitespace-pre-wrap">{{ subscriber.metadata|pprint }}</pre>
+        {% else %}
+        <span class="text-[13px] text-gray-400">{% trans "No metadata." %}</span>
+        {% endif %}
+      </div>
+    </div>
+
+    {# CLI hint #}
+    <div class="bg-gray-50 border border-gray-200 rounded-[10px]">
+      <div class="px-5 py-4 border-b border-gray-200">
+        <h3 class="text-[14px] font-semibold tracking-tight m-0">{% trans "CLI" %}</h3>
+      </div>
+      <div class="px-5 py-4">
+        <code class="text-[12px] text-gray-600 bg-white rounded-md px-3 py-2 block border border-gray-200 font-mono">
+          postino gdpr audit {{ subscriber.email }}
+        </code>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

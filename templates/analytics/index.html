@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+{% load i18n postino_charts %}
+
+{% block title %}{% trans "Analytics" %}{% endblock %}
+
+{% block breadcrumb %}{% trans "Analytics" %}{% endblock %}
+
+{% block nav_analytics_class %}bg-indigo-500/20 text-white{% endblock %}
+
+{% block page_title %}{% trans "Analytics" %}{% endblock %}
+{% block page_subtitle %}
+  <div class="text-[13px] text-gray-500 mt-1">
+    {% blocktrans with days=days %}Email metrics for the last {{ days }} days.{% endblocktrans %}
+  </div>
+{% endblock %}
+
+{% block page_actions %}
+  <div class="flex items-center gap-2 text-[13px]">
+    <a href="?days=7" class="px-2.5 py-1 rounded-md border border-gray-200 hover:bg-gray-50 {% if days == 7 %}bg-indigo-50 border-indigo-200 text-indigo-700{% endif %}">7d</a>
+    <a href="?days=30" class="px-2.5 py-1 rounded-md border border-gray-200 hover:bg-gray-50 {% if days == 30 %}bg-indigo-50 border-indigo-200 text-indigo-700{% endif %}">30d</a>
+    <a href="?days=90" class="px-2.5 py-1 rounded-md border border-gray-200 hover:bg-gray-50 {% if days == 90 %}bg-indigo-50 border-indigo-200 text-indigo-700{% endif %}">90d</a>
+  </div>
+{% endblock %}
+
+{% block help_widget %}
+<button onclick="document.getElementById('help-dialog').showModal()"
+        class="fixed bottom-6 right-6 z-50 w-10 h-10 rounded-full bg-indigo-500 hover:bg-indigo-600 text-white shadow-lg flex items-center justify-center text-lg font-semibold transition-colors cursor-pointer"
+        aria-label="{% trans 'Help' %}">?</button>
+<dialog id="help-dialog" class="fixed inset-0 m-auto max-w-md w-[calc(100%-2rem)] rounded-xl border border-gray-200 shadow-2xl p-0 backdrop:bg-black/30">
+  <div class="px-6 pt-5 pb-4">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center flex-shrink-0">
+        {% include "components/icon.html" with name="info" size=16 %}
+      </div>
+      <h3 class="text-base font-semibold text-gray-900 m-0 flex-1">{% trans "Analytics" %}</h3>
+      <button onclick="document.getElementById('help-dialog').close()" class="text-gray-400 hover:text-gray-600">
+        {% include "components/icon.html" with name="x" size=18 %}
+      </button>
+    </div>
+    <div class="text-sm text-gray-600 leading-relaxed space-y-2 pl-11">
+      <p>{% trans "Email delivery and engagement metrics for all campaigns." %}</p><p>{% trans "<strong>Delivery rate</strong> — percentage of emails that reached the inbox." %}</p><p>{% trans "<strong>Open/Click rate</strong> — engagement metrics (requires tracking to be enabled in config)." %}</p>
+    </div>
+  </div>
+  <div class="px-6 py-3 bg-gray-50 border-t border-gray-100 rounded-b-xl">
+    <button onclick="document.getElementById('help-dialog').close()" class="text-sm font-medium text-gray-700 hover:text-gray-900">{% trans "Got it" %}</button>
+  </div>
+</dialog>
+{% endblock %}
+
+{% block content %}
+{# Stat cards #}
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+  {% include "components/stat_card.html" with label=_("Emails sent") value=metrics.emails_sent %}
+  {% include "components/stat_card.html" with label=_("Delivered") value=metrics.emails_delivered meta=metrics.open_rate|add:"% open rate" %}
+  {% include "components/stat_card.html" with label=_("Opened") value=metrics.emails_opened meta=metrics.click_rate|add:"% click rate" %}
+  {% include "components/stat_card.html" with label=_("Bounced") value=metrics.emails_bounced meta=metrics.bounce_rate|add:"% bounce rate" %}
+</div>
+
+{# Two-column layout #}
+<div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] gap-6">
+  {# Left column #}
+  <div class="flex flex-col gap-6">
+    {# Email metrics detail #}
+    <div class="bg-white border border-gray-200 rounded-[10px]">
+      <div class="px-5 py-4 border-b border-gray-200">
+        <h3 class="text-[14px] font-semibold tracking-tight m-0">{% trans "Email metrics" %}</h3>
+      </div>
+      <div class="p-5">
+        <table class="w-full border-collapse text-[13px]">
+          <thead>
+            <tr>
+              <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500 px-3 py-2 bg-gray-50 border-b border-gray-200">{% trans "Metric" %}</th>
+              <th class="text-right text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500 px-3 py-2 bg-gray-50 border-b border-gray-200">{% trans "Count" %}</th>
+              <th class="text-right text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500 px-3 py-2 bg-gray-50 border-b border-gray-200">{% trans "Rate" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hover:bg-gray-50">
+              <td class="px-3 py-2.5 border-b border-gray-100">{% trans "Sent" %}</td>
+              <td class="px-3 py-2.5 border-b border-gray-100 text-right tabular-nums">{{ metrics.emails_sent }}</td>
+              <td class="px-3 py-2.5 border-b border-gray-100 text-right tabular-nums text-gray-500">—</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="px-3 py-2.5 border-b border-gray-100">{% trans "Delivered" %}</td>
+              <td class="px-3 py-2.5 border-b border-gray-100 text-right tabular-nums">{{ metrics.emails_delivered }}</td>
+              <td class="px-3 py-2.5 border-b border-gray-100 text-right tabular-nums text-gray-500">—</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="px-3 py-2.5 border-b border-gray-100">{% trans "Opened" %}</td>
+              <td class="px-3 py-2.5 border-b border-gray-100 text-right tabular-nums">{{ metrics.emails_opened }}</td>
+              <td class="px-3 py-2.5 border-b border-gray-100 text-right tabular-nums">{{ metrics.open_rate }}%</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="px-3 py-2.5 border-b border-gray-100">{% trans "Clicked" %}</td>
+              <td class="px-3 py-2.5 border-b border-gray-100 text-right tabular-nums">{{ metrics.emails_clicked }}</td>
+              <td class="px-3 py-2.5 border-b border-gray-100 text-right tabular-nums">{{ metrics.click_rate }}%</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="px-3 py-2.5 border-b border-gray-100">{% trans "Bounced" %}</td>
+              <td class="px-3 py-2.5 border-b border-gray-100 text-right tabular-nums">{{ metrics.emails_bounced }}</td>
+              <td class="px-3 py-2.5 border-b border-gray-100 text-right tabular-nums text-red-600">{{ metrics.bounce_rate }}%</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="px-3 py-2.5">{% trans "Complained" %}</td>
+              <td class="px-3 py-2.5 text-right tabular-nums">{{ metrics.emails_complained }}</td>
+              <td class="px-3 py-2.5 text-right tabular-nums text-gray-500">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    {# Sequence performance #}
+    <div class="bg-white border border-gray-200 rounded-[10px]">
+      <div class="px-5 py-4 border-b border-gray-200">
+        <h3 class="text-[14px] font-semibold tracking-tight m-0">{% trans "Sequence performance" %}</h3>
+      </div>
+      {% if sequence_performances %}
+      <div class="divide-y divide-gray-100">
+        {% for sp in sequence_performances %}
+        <div class="px-5 py-4">
+          <div class="flex items-center justify-between mb-2">
+            <div class="font-medium text-[13.5px]">{{ sp.sequence_name }}</div>
+            <div class="text-[12px] text-gray-500">
+              {{ sp.total_enrollments }} {% trans "enrolled" %}
+              · {{ sp.completion_rate }}% {% trans "completed" %}
+            </div>
+          </div>
+          {% if sp.step_stats %}
+          <div class="flex gap-1.5">
+            {% for step in sp.step_stats %}
+            <div class="flex-1 bg-gray-50 rounded px-2 py-1.5 text-[11px] text-center">
+              <div class="text-gray-500">{% trans "Step" %} {{ step.order }}</div>
+              <div class="font-medium tabular-nums">{{ step.sent }}</div>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      {% include "components/empty_state.html" with icon="workflow" title=_("No sequences yet") message=_("Sequence stats will appear when sequences are running.") %}
+      {% endif %}
+    </div>
+  </div>
+
+  {# Right column #}
+  <div class="flex flex-col gap-6">
+    {# Health distribution #}
+    <div class="bg-white border border-gray-200 rounded-[10px]">
+      <div class="px-5 py-4 border-b border-gray-200 flex items-center gap-3">
+        <h3 class="text-[14px] font-semibold tracking-tight m-0">{% trans "List health" %}</h3>
+        <div class="ml-auto">
+          <a href="{% url 'analytics:churn' %}" class="text-[12px] text-gray-500 hover:text-gray-700 inline-flex items-center gap-1 font-medium">
+            {% trans "Open churn" %}
+            {% include "components/icon.html" with name="chevRight" size=12 %}
+          </a>
+        </div>
+      </div>
+      <div class="p-5">
+        {% if health_distribution.total > 0 %}
+        <div class="flex h-3 rounded-full overflow-hidden bg-gray-100">
+          {% if health_distribution.healthy_pct > 0 %}
+          <div class="h-full bg-emerald-500" style="width: {{ health_distribution.healthy_pct }}%;"></div>
+          {% endif %}
+          {% if health_distribution.at_risk_pct > 0 %}
+          <div class="h-full bg-amber-500" style="width: {{ health_distribution.at_risk_pct }}%;"></div>
+          {% endif %}
+          {% if health_distribution.critical_pct > 0 %}
+          <div class="h-full bg-red-500" style="width: {{ health_distribution.critical_pct }}%;"></div>
+          {% endif %}
+        </div>
+        <div class="flex justify-between gap-3 mt-3.5 flex-wrap">
+          <div class="text-[12px] text-gray-600 flex flex-col gap-0.5">
+            <span class="flex items-center gap-1.5 font-medium text-gray-700">
+              <span class="w-2 h-2 rounded-[2px] bg-emerald-500 inline-block"></span>
+              {% trans "Healthy" %}
+            </span>
+            <span class="text-[18px] font-semibold text-gray-900 tabular-nums tracking-tight">
+              {{ health_distribution.healthy_count }}
+            </span>
+            <span class="text-[11.5px]">{{ health_distribution.healthy_pct|floatformat:1 }}%</span>
+          </div>
+          <div class="text-[12px] text-gray-600 flex flex-col gap-0.5">
+            <span class="flex items-center gap-1.5 font-medium text-gray-700">
+              <span class="w-2 h-2 rounded-[2px] bg-amber-500 inline-block"></span>
+              {% trans "At-risk" %}
+            </span>
+            <span class="text-[18px] font-semibold text-gray-900 tabular-nums tracking-tight">
+              {{ health_distribution.at_risk_count }}
+            </span>
+            <span class="text-[11.5px]">{{ health_distribution.at_risk_pct|floatformat:1 }}%</span>
+          </div>
+          <div class="text-[12px] text-gray-600 flex flex-col gap-0.5">
+            <span class="flex items-center gap-1.5 font-medium text-gray-700">
+              <span class="w-2 h-2 rounded-[2px] bg-red-500 inline-block"></span>
+              {% trans "Critical" %}
+            </span>
+            <span class="text-[18px] font-semibold text-gray-900 tabular-nums tracking-tight">
+              {{ health_distribution.critical_count }}
+            </span>
+            <span class="text-[11.5px]">{{ health_distribution.critical_pct|floatformat:1 }}%</span>
+          </div>
+        </div>
+        {% else %}
+        <div class="py-8 text-center text-gray-400 text-[13px]">
+          {% trans "Health data will appear once subscribers have health scores." %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {# Subscriber summary #}
+    <div class="bg-white border border-gray-200 rounded-[10px]">
+      <div class="px-5 py-4 border-b border-gray-200">
+        <h3 class="text-[14px] font-semibold tracking-tight m-0">{% trans "Subscriber summary" %}</h3>
+      </div>
+      <div class="p-5">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <div class="text-[11.5px] text-gray-500 uppercase tracking-[0.04em]">{% trans "Active" %}</div>
+            <div class="text-[20px] font-semibold tabular-nums tracking-tight">{{ metrics.active_subscribers }}</div>
+          </div>
+          <div>
+            <div class="text-[11.5px] text-gray-500 uppercase tracking-[0.04em]">{% trans "Total" %}</div>
+            <div class="text-[20px] font-semibold tabular-nums tracking-tight">{{ metrics.total_subscribers }}</div>
+          </div>
+          <div>
+            <div class="text-[11.5px] text-gray-500 uppercase tracking-[0.04em]">{% trans "New" %}</div>
+            <div class="text-[20px] font-semibold tabular-nums tracking-tight text-emerald-600">+{{ metrics.new_count }}</div>
+          </div>
+          <div>
+            <div class="text-[11.5px] text-gray-500 uppercase tracking-[0.04em]">{% trans "Churned" %}</div>
+            <div class="text-[20px] font-semibold tabular-nums tracking-tight text-red-600">-{{ metrics.churned_count }}</div>
+          </div>
+          <div>
+            <div class="text-[11.5px] text-gray-500 uppercase tracking-[0.04em]">{% trans "Avg health" %}</div>
+            <div class="text-[20px] font-semibold tabular-nums tracking-tight">{{ metrics.avg_health_score }}</div>
+          </div>
+          <div>
+            <div class="text-[11.5px] text-gray-500 uppercase tracking-[0.04em]">{% trans "Churn rate" %}</div>
+            <div class="text-[20px] font-semibold tabular-nums tracking-tight">{{ metrics.churn_rate }}%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,132 @@
+# Postino Configuration
+# Copy to config.toml and customize for your environment.
+# Environment variables override TOML values (prefixed POSTINO_).
+
+# ─── Server ────────────────────────────────────────────────────
+
+[server]
+# Django SECRET_KEY — generate with: python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+secret_key = ""
+debug = false
+allowed_hosts = ["localhost", "127.0.0.1"]
+timezone = "UTC"
+# Base URL of this Postino instance (used in unsubscribe links)
+base_url = "http://localhost:8000"
+
+# ─── Database ──────────────────────────────────────────────────
+
+[database]
+url = "postgresql://postino:postino@localhost:5432/postino"
+
+# ─── Email Provider ───────────────────────────────────────────
+# provider: "resend", "smtp", "ses", "mailgun", "console"
+# "console" prints emails to stdout (development only)
+
+[email]
+provider = "console"
+from_name = "My Newsletter"
+from_email = "hello@example.com"
+reply_to = ""
+
+[email.resend]
+api_key = ""
+webhook_signing_secret = ""
+
+[email.smtp]
+host = ""
+port = 587
+username = ""
+password = ""
+use_tls = true
+# use_ssl = true for providers that require direct SSL (e.g. Zoho on port 465)
+use_ssl = false
+
+[email.ses]
+aws_access_key_id = ""
+aws_secret_access_key = ""
+aws_region = "eu-west-1"
+
+[email.mailgun]
+api_key = ""
+domain = ""
+webhook_signing_key = ""
+
+# ─── Background Tasks ────────────────────────────────────────
+# Postino uses Django management commands + cron for background tasks.
+# No task queue or message broker required.
+# See PLAN.md for the recommended crontab schedule.
+
+# ─── Security ─────────────────────────────────────────────────
+
+[security]
+# HMAC secret for unsubscribe/preference tokens. Min 32 characters.
+# Generate with: python -c "import secrets; print(secrets.token_urlsafe(48))"
+unsubscribe_secret = ""
+
+# ─── GDPR & Privacy ──────────────────────────────────────────
+
+[gdpr]
+# Require email confirmation before activating new subscribers
+require_double_optin = true
+
+# Days to keep data for unsubscribed users (0 = immediate purge)
+unsubscribed_retention_days = 90
+
+# Days to keep email send logs (delivery, open, click events)
+email_log_retention_days = 730
+
+# Open tracking: embed invisible pixel to detect email opens
+# Default OFF — enabling this has GDPR implications
+enable_open_tracking = false
+
+# Click tracking: rewrite links through Postino to track clicks
+# Default OFF — enabling this has GDPR implications
+enable_click_tracking = false
+
+# Physical mailing address (required by CAN-SPAM for US recipients)
+physical_address = ""
+
+# ─── Branding ─────────────────────────────────────────────────
+
+[branding]
+# Name shown in the dashboard and email templates
+app_name = "Postino"
+# Primary accent color (hex)
+primary_color = "#6366f1"
+# URL to a logo image (optional, used in emails and dashboard)
+logo_url = ""
+
+# ─── Data Sources (optional) ─────────────────────────────────
+# Configure external databases to sync subscribers from.
+# Each [[sources]] entry defines one source.
+
+# Example: sync from an external app's PostgreSQL database
+# [[sources]]
+# name = "My App"
+# type = "database"
+# enabled = true
+# sync_interval_hours = 6
+# database_url = "postgresql://readonly:pass@host:5432/myapp"
+# query = "SELECT id, email, first_name, plan, last_login FROM users WHERE email_verified = true"
+# field_map = { email = "email", name = "first_name", source_id = "id" }
+# tag = "myapp"
+# metadata_fields = ["plan", "last_login"]
+
+# ─── Plugins (optional) ──────────────────────────────────────
+# Plugins extend Postino with dynamic email content.
+# Each [plugins.<name>] section configures one plugin.
+# The plugin must be installed: pip install -e ".[<name>]"
+
+# Example: Astrology plugin (powered by Astrologer API)
+# Get your API key at: https://www.kerykeion.net/astrologer-api/subscribe
+# [plugins.astrology]
+# enabled = true
+# api_key = "your-rapidapi-key"
+# default_latitude = 41.9028
+# default_longitude = 12.4964
+
+# ─── Sentry (optional) ───────────────────────────────────────
+
+[sentry]
+dsn = ""
+traces_sample_rate = 0.1

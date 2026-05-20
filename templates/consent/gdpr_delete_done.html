@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Data Deleted" %}{% endblock %}
+
+{% block breadcrumb %}{% trans "Subscribers" %}{% endblock %}
+
+{% block nav_subscribers_class %}bg-indigo-500/20 text-white{% endblock %}
+
+{% block page_title %}{% trans "Data deleted" %}{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto bg-white border border-gray-200 rounded-[10px] p-6 text-center">
+  <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 mx-auto mb-4">
+    {% include "components/icon.html" with name="check" size=24 %}
+  </div>
+  <h3 class="text-[16px] font-semibold mb-2">{% trans "Personal data has been deleted" %}</h3>
+  <p class="text-[13px] text-gray-600 mb-6">
+    {% blocktrans with email=subscriber.email %}All personal data for <strong>{{ email }}</strong> has been permanently removed. The subscriber status is now "deleted".{% endblocktrans %}
+  </p>
+  <a href="{% url 'subscribers:list' %}"
+     class="inline-flex items-center gap-1.5 px-4 py-2 text-[13px] font-medium rounded-md bg-indigo-500 text-white hover:bg-indigo-600 transition-colors">
+    {% trans "Back to subscribers" %}
+  </a>
+</div>
+{% endblock %}

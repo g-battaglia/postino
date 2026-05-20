@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ sequence.name }}{% endblock %}
+{% block breadcrumb %}
+  <a href="{% url 'sequences:list' %}" class="hover:text-indigo-600">{% trans "Sequences" %}</a>
+  {% include "components/icon.html" with name="chevRight" size=12 %}
+  {{ sequence.name }}
+{% endblock %}
+{% block nav_sequences_class %}bg-indigo-500/20 text-white{% endblock %}
+
+{% block page_title %}{{ sequence.name }}{% endblock %}
+{% block page_subtitle %}
+  <div class="text-[13px] text-gray-500 mt-1">
+    {{ sequence.slug }} · {{ sequence.get_trigger_type_display }} ·
+    {{ total_enrollments }} {% trans "enrolled" %}
+  </div>
+{% endblock %}
+
+{% block page_actions %}
+  <a href="{% url 'sequences:edit' sequence_id=sequence.pk %}"
+     class="inline-flex items-center gap-1.5 px-3 py-[7px] text-[13px] font-medium rounded-md
+            border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+    {% include "components/icon.html" with name="pencil" size=14 %}
+    {% trans "Edit" %}
+  </a>
+{% endblock %}
+
+{% block content %}
+{# Description #}
+{% if sequence.description %}
+<div class="bg-white border border-gray-200 rounded-[10px] p-5 mb-5">
+  <p class="text-[13px] text-gray-600">{{ sequence.description }}</p>
+</div>
+{% endif %}
+
+{# Steps timeline #}
+<div class="bg-white border border-gray-200 rounded-[10px] p-5 mb-5">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-[15px] font-semibold text-gray-900 m-0">
+      {% trans "Steps" %} <span class="text-gray-400 font-normal">({{ steps|length }})</span>
+    </h2>
+  </div>
+
+  {% if steps %}
+  <div class="relative pl-6">
+    {# Vertical line #}
+    <div class="absolute left-[11px] top-2 bottom-2 w-px bg-gray-200"></div>
+
+    {% for step in steps %}
+    <div class="relative pb-6 last:pb-0">
+      {# Timeline dot #}
+      <div class="absolute -left-6 top-1 w-[22px] h-[22px] rounded-full bg-indigo-50 border-2 border-indigo-400
+                  flex items-center justify-center text-[10px] font-bold text-indigo-600">
+        {{ step.order }}
+      </div>
+
+      <div class="bg-gray-50 border border-gray-100 rounded-lg p-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-[13px] font-medium text-gray-900">{{ step.template.name }}</span>
+            {% if step.subject_override %}
+            <span class="text-[12px] text-gray-500 ml-2">— {{ step.subject_override }}</span>
+            {% endif %}
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] text-gray-400">
+              {% blocktrans count hours=step.delay_hours %}
+                {{ hours }}h delay
+              {% plural %}
+                {{ hours }}h delay
+              {% endblocktrans %}
+            </span>
+            <form method="post" action="{% url 'sequences:step_delete' sequence_id=sequence.pk step_id=step.pk %}"
+                  class="inline">
+              {% csrf_token %}
+              <button type="submit" class="text-gray-400 hover:text-red-500 transition-colors"
+                      title="{% trans 'Remove step' %}"
+                      onclick="return confirm('{% trans 'Remove this step?' %}')">
+                {% include "components/icon.html" with name="x" size=12 %}
+              </button>
+            </form>
+          </div>
+        </div>
+        <div class="text-[12px] text-gray-400 mt-1">
+          {{ step.email_type.name }}
+          {% if step.condition %} · <span class="font-mono">{{ step.condition }}</span>{% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-center py-8 text-gray-400 text-[13px]">
+    {% trans "No steps yet. Add the first step below." %}
+  </div>
+  {% endif %}
+
+  {# Add step form #}
+  <div class="border-t border-gray-100 pt-4 mt-2">
+    <form method="post" action="{% url 'sequences:step_create' sequence_id=sequence.pk %}"
+          class="flex flex-wrap items-end gap-3">
+      {% csrf_token %}
+      <div class="flex flex-col">
+        <label class="text-[11px] text-gray-500 mb-1">{% trans "Delay (hours)" %}</label>
+        <input type="number" name="delay_hours" value="0" min="0"
+               class="h-8 w-20 px-2 text-[13px] border border-gray-200 rounded-md bg-white
+                      focus:border-indigo-300 focus:ring-1 focus:ring-indigo-200 outline-none">
+      </div>
+      <div class="flex flex-col flex-1 min-w-[140px]">
+        <label class="text-[11px] text-gray-500 mb-1">{% trans "Email Type" %}</label>
+        <select name="email_type" required
+                class="h-8 px-2 text-[13px] border border-gray-200 rounded-md bg-white
+                       focus:border-indigo-300 focus:ring-1 focus:ring-indigo-200 outline-none">
+          {% for et in email_types %}
+          <option value="{{ et.pk }}">{{ et.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="flex flex-col flex-1 min-w-[140px]">
+        <label class="text-[11px] text-gray-500 mb-1">{% trans "Template" %}</label>
+        <select name="template" required
+                class="h-8 px-2 text-[13px] border border-gray-200 rounded-md bg-white
+                       focus:border-indigo-300 focus:ring-1 focus:ring-indigo-200 outline-none">
+          {% for tmpl in templates %}
+          <option value="{{ tmpl.pk }}">{{ tmpl.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="flex flex-col flex-1 min-w-[140px]">
+        <label class="text-[11px] text-gray-500 mb-1">{% trans "Subject (optional)" %}</label>
+        <input type="text" name="subject_override" placeholder="{% trans 'Uses template default' %}"
+               class="h-8 px-2 text-[13px] border border-gray-200 rounded-md bg-white
+                      focus:border-indigo-300 focus:ring-1 focus:ring-indigo-200 outline-none">
+      </div>
+      <button type="submit"
+              class="h-8 px-3 text-[13px] font-medium rounded-md bg-indigo-500 text-white
+                     hover:bg-indigo-600 transition-colors whitespace-nowrap">
+        {% trans "Add Step" %}
+      </button>
+    </form>
+  </div>
+</div>
+
+{# Enrollments summary #}
+<div class="bg-white border border-gray-200 rounded-[10px] p-5">
+  <h2 class="text-[15px] font-semibold text-gray-900 m-0 mb-4">
+    {% trans "Enrollments" %}
+  </h2>
+
+  {% if enrollment_counts %}
+  <div class="flex gap-3 mb-4">
+    {% for status_val, count in enrollment_counts.items %}
+    <div class="px-3 py-1.5 rounded-md text-[12px] font-medium
+                {% if status_val == 'active' %}bg-emerald-50 text-emerald-700 border border-emerald-200
+                {% elif status_val == 'completed' %}bg-blue-50 text-blue-700 border border-blue-200
+                {% elif status_val == 'cancelled' %}bg-red-50 text-red-700 border border-red-200
+                {% elif status_val == 'paused' %}bg-amber-50 text-amber-700 border border-amber-200
+                {% else %}bg-gray-100 text-gray-600{% endif %}">
+      {{ status_val|title }}: {{ count }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if enrollments %}
+  <table class="w-full text-[13px]">
+    <thead>
+      <tr class="border-b border-gray-100 text-gray-500 text-left">
+        <th class="px-3 py-2 font-medium">{% trans "Subscriber" %}</th>
+        <th class="px-3 py-2 font-medium">{% trans "Status" %}</th>
+        <th class="px-3 py-2 font-medium">{% trans "Step" %}</th>
+        <th class="px-3 py-2 font-medium">{% trans "Enrolled" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for enrollment in enrollments %}
+      <tr class="border-b border-gray-50">
+        <td class="px-3 py-2">{{ enrollment.subscriber.email }}</td>
+        <td class="px-3 py-2">
+          <span class="inline-flex px-2 py-0.5 rounded text-[11px] font-medium
+                       {% if enrollment.status == 'active' %}bg-emerald-50 text-emerald-700
+                       {% elif enrollment.status == 'completed' %}bg-blue-50 text-blue-700
+                       {% elif enrollment.status == 'cancelled' %}bg-red-50 text-red-700
+                       {% elif enrollment.status == 'paused' %}bg-amber-50 text-amber-700
+                       {% endif %}">
+            {{ enrollment.get_status_display }}
+          </span>
+        </td>
+        <td class="px-3 py-2 text-gray-500">
+          {% if enrollment.current_step %}
+            Step {{ enrollment.current_step.order }}
+          {% elif enrollment.status == 'completed' %}
+            {% trans "Done" %}
+          {% else %}
+            —
+          {% endif %}
+        </td>
+        <td class="px-3 py-2 text-gray-400">{{ enrollment.enrolled_at|date:"M j, H:i" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="text-center py-6 text-gray-400 text-[13px]">
+    {% trans "No enrollments yet." %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

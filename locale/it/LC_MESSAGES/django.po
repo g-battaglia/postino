@@ -1,0 +1,1610 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-21 08:33+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "e.g. paid, beta, vip"
+msgstr ""
+
+msgid "Comma-separated tag names. Leave empty for all."
+msgstr ""
+
+msgid "Active only"
+msgstr ""
+
+msgid "All statuses"
+msgstr "Tutti gli stati"
+
+#, python-format
+msgid "Invalid JSON: %(error)s"
+msgstr ""
+
+#, python-format
+msgid "Trigger config must be a JSON object, not a %(type)s."
+msgstr ""
+
+msgid "Draft"
+msgstr ""
+
+msgid "Scheduled"
+msgstr ""
+
+msgid "Sending"
+msgstr ""
+
+msgid "Sent"
+msgstr ""
+
+msgid "Cancelled"
+msgstr ""
+
+msgid "name"
+msgstr ""
+
+msgid "status"
+msgstr ""
+
+msgid "email type"
+msgstr ""
+
+msgid "template"
+msgstr ""
+
+msgid "subject line"
+msgstr ""
+
+msgid "audience filter"
+msgstr ""
+
+msgid "JSON filter criteria for selecting recipients."
+msgstr ""
+
+msgid "recipient count"
+msgstr ""
+
+msgid "scheduled at"
+msgstr ""
+
+msgid "sent at"
+msgstr ""
+
+msgid "campaign"
+msgstr ""
+
+msgid "campaigns"
+msgstr ""
+
+msgid "Subscriber Created"
+msgstr ""
+
+msgid "Tag Added"
+msgstr ""
+
+msgid "Manual"
+msgstr ""
+
+msgid "slug"
+msgstr ""
+
+msgid "description"
+msgstr ""
+
+msgid "is active"
+msgstr ""
+
+msgid "trigger type"
+msgstr ""
+
+msgid "trigger config"
+msgstr ""
+
+msgid "Trigger matching rules, e.g. {\"tags\": [\"pro\"], \"source\": \"signup_form\"}."
+msgstr ""
+
+msgid "sequence"
+msgstr ""
+
+msgid "sequences"
+msgstr ""
+
+msgid "order"
+msgstr ""
+
+msgid "delay hours"
+msgstr ""
+
+msgid "Hours to wait after enrollment before sending this step."
+msgstr ""
+
+msgid "subject override"
+msgstr ""
+
+msgid "Leave blank to use the template's default subject."
+msgstr ""
+
+msgid "condition"
+msgstr ""
+
+msgid "Optional JSON filter to evaluate before sending, e.g. {\"health_below\": 30}."
+msgstr ""
+
+msgid "sequence step"
+msgstr ""
+
+msgid "sequence steps"
+msgstr ""
+
+msgid "Active"
+msgstr "Attivo"
+
+msgid "Completed"
+msgstr ""
+
+msgid "Paused"
+msgstr ""
+
+msgid "subscriber"
+msgstr ""
+
+msgid "current step"
+msgstr ""
+
+msgid "enrolled at"
+msgstr ""
+
+msgid "completed at"
+msgstr ""
+
+msgid "sequence enrollment"
+msgstr ""
+
+msgid "sequence enrollments"
+msgstr ""
+
+msgid "Queued"
+msgstr ""
+
+msgid "Delivered"
+msgstr "Consegnate"
+
+msgid "Opened"
+msgstr "Aperte"
+
+msgid "Clicked"
+msgstr "Cliccate"
+
+msgid "Bounced"
+msgstr "Rimbalzate"
+
+msgid "Complained"
+msgstr "Reclami"
+
+msgid "Failed"
+msgstr ""
+
+msgid "subject line used"
+msgstr ""
+
+msgid "provider message ID"
+msgstr ""
+
+msgid "error message"
+msgstr ""
+
+msgid "delivered at"
+msgstr ""
+
+msgid "opened at"
+msgstr ""
+
+msgid "clicked at"
+msgstr ""
+
+msgid "bounced at"
+msgstr ""
+
+msgid "complained at"
+msgstr ""
+
+msgid "email send"
+msgstr ""
+
+msgid "email sends"
+msgstr ""
+
+#, python-format
+msgid "Campaign \"%(name)s\" created."
+msgstr ""
+
+#, python-format
+msgid "Cannot edit campaign \"%(name)s\" — it is %(status)s. Only draft and scheduled campaigns can be edited."
+msgstr ""
+
+#, python-format
+msgid "Campaign \"%(name)s\" updated."
+msgstr ""
+
+#, python-format
+msgid "Sequence \"%(name)s\" created."
+msgstr ""
+
+#, python-format
+msgid "Sequence \"%(name)s\" updated."
+msgstr ""
+
+msgid "Delay must be a whole number of hours."
+msgstr ""
+
+msgid "Delay cannot be negative."
+msgstr ""
+
+msgid "Invalid condition JSON."
+msgstr ""
+
+msgid "Condition must be a JSON object."
+msgstr ""
+
+#, python-format
+msgid "Step %(order)d added."
+msgstr ""
+
+msgid "Step removed."
+msgstr ""
+
+msgid "Stop receiving this type of email"
+msgstr ""
+
+msgid "Unsubscribe from all emails"
+msgstr ""
+
+msgid "Delete all my data"
+msgstr ""
+
+#, python-brace-format
+msgid "Stop receiving {name} emails"
+msgstr ""
+
+msgid "Bulk updates are not allowed on append-only models."
+msgstr ""
+
+msgid "Bulk deletes are not allowed on append-only models."
+msgstr ""
+
+#, python-format
+msgid "Cannot modify an existing %(model)s record."
+msgstr ""
+
+#, python-format
+msgid "Cannot delete a %(model)s record."
+msgstr ""
+
+msgid "email types"
+msgstr "tipi di email"
+
+msgid "Grant"
+msgstr ""
+
+msgid "Withdraw"
+msgstr ""
+
+msgid "action"
+msgstr ""
+
+msgid "method"
+msgstr ""
+
+msgid "IP address"
+msgstr ""
+
+msgid "proof"
+msgstr ""
+
+msgid "consent record"
+msgstr ""
+
+msgid "consent records"
+msgstr ""
+
+msgid "email"
+msgstr ""
+
+msgid "user agent"
+msgstr ""
+
+msgid "unsubscribe event"
+msgstr ""
+
+msgid "unsubscribe events"
+msgstr ""
+
+msgid "Invalid token"
+msgstr ""
+
+msgid "This unsubscribe link is invalid or has expired."
+msgstr ""
+
+msgid "Invalid form submission."
+msgstr ""
+
+msgid "Invalid or expired token."
+msgstr ""
+
+msgid "No email type specified."
+msgstr ""
+
+msgid "Unknown email type."
+msgstr ""
+
+msgid "Unknown action."
+msgstr ""
+
+msgid "Missing token."
+msgstr ""
+
+msgid "Invalid one-click marker."
+msgstr ""
+
+msgid "Invalid or missing token."
+msgstr ""
+
+msgid "Your account is not active. Per-type preferences cannot be changed."
+msgstr ""
+
+msgid "Your preferences have been updated."
+msgstr ""
+
+msgid "CSV file"
+msgstr ""
+
+msgid "Upload a CSV file with at least an 'email' column."
+msgstr ""
+
+msgid "Default tag"
+msgstr ""
+
+msgid "Optional tag to apply to all imported subscribers."
+msgstr ""
+
+msgid "e.g. newsletter"
+msgstr ""
+
+msgid "Please upload a CSV file (.csv extension)."
+msgstr ""
+
+msgid "Tag name"
+msgstr ""
+
+msgid "e.g. vip"
+msgstr ""
+
+msgid "Reason"
+msgstr ""
+
+#, python-format
+msgid "%(value)s is not a valid hex color (expected #RRGGBB)"
+msgstr ""
+
+msgid "Pending"
+msgstr ""
+
+msgid "Unsubscribed"
+msgstr ""
+
+msgid "Deleted"
+msgstr ""
+
+msgid "Import"
+msgstr ""
+
+msgid "Sync"
+msgstr ""
+
+msgid "Signup Form"
+msgstr ""
+
+#, python-format
+msgid "Cannot reactivate a suppressed subscriber (%(current)s -> %(proposed)s)."
+msgstr ""
+
+msgid "Database"
+msgstr ""
+
+msgid "Running"
+msgstr ""
+
+msgid "Success"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Dry Run"
+msgstr ""
+
+msgid "CSV file must have an 'email' column."
+msgstr ""
+
+#, python-format
+msgid "Row %(row_num)s: empty email, skipped."
+msgstr ""
+
+#, python-format
+msgid "Row %(row_num)s (%(email)s): %(error)s"
+msgstr ""
+
+msgid "e.g. Welcome Email"
+msgstr ""
+
+msgid "e.g. welcome-email"
+msgstr ""
+
+msgid "e.g. Welcome to {{ app_name }}, {{ subscriber_name }}!"
+msgstr ""
+
+msgid ""
+"<h1>Hello {{ subscriber_name }}</h1>\n"
+"<p>Your content here.</p>"
+msgstr ""
+
+msgid ""
+"Hello {{ subscriber_name }}\n"
+"\n"
+"Your content here."
+msgstr ""
+
+msgid "Changing the slug updates this template's URL and CLI identifier. Campaigns linked by reference are not affected."
+msgstr ""
+
+msgid "Human-readable template name."
+msgstr ""
+
+msgid "Stable identifier used by campaigns and sequences."
+msgstr ""
+
+msgid "default subject"
+msgstr ""
+
+msgid "Subject line, may contain {{ variable }} placeholders."
+msgstr ""
+
+msgid "HTML body"
+msgstr "Corpo HTML"
+
+msgid "Email body content rendered inside the base layout."
+msgstr ""
+
+msgid "plain text body"
+msgstr ""
+
+msgid "Optional plain-text version. Left blank, HTML is sent only."
+msgstr ""
+
+msgid "email template"
+msgstr ""
+
+msgid "email templates"
+msgstr ""
+
+#, python-format
+msgid "Template \"%(name)s\" created."
+msgstr ""
+
+#, python-format
+msgid "Template \"%(name)s\" updated."
+msgstr ""
+
+msgid "provider"
+msgstr ""
+
+msgid "event type"
+msgstr ""
+
+msgid "payload"
+msgstr ""
+
+msgid "processed"
+msgstr ""
+
+msgid "created at"
+msgstr ""
+
+msgid "webhook event"
+msgstr ""
+
+msgid "webhook events"
+msgstr ""
+
+msgid "Churn Dashboard"
+msgstr ""
+
+msgid "Analytics"
+msgstr "Analisi"
+
+msgid "Churn dashboard"
+msgstr "Dashboard abbandono"
+
+#, python-format
+msgid "Churn analysis for the last %(days)s days."
+msgstr ""
+
+msgid "Help"
+msgstr "Aiuto"
+
+msgid "Churn analysis shows subscriber retention and at-risk users."
+msgstr "L'analisi di abbandono mostra la ritenzione degli iscritti e gli utenti a rischio."
+
+msgid "<strong>Health distribution</strong> — breakdown of subscribers by engagement score."
+msgstr "<strong>Distribuzione salute</strong> — suddivisione degli iscritti per punteggio di coinvolgimento."
+
+msgid "<strong>At-risk subscribers</strong> — low health score, likely to unsubscribe."
+msgstr "<strong>Iscritti a rischio</strong> — basso punteggio salute, probabilmente si disiscriveranno."
+
+msgid "Use this data to target win-back campaigns."
+msgstr "Usa questi dati per campagne di recupero."
+
+msgid "Got it"
+msgstr "Capito"
+
+msgid "Churn rate"
+msgstr ""
+
+msgid "Churned"
+msgstr "Persi"
+
+msgid "in period"
+msgstr ""
+
+msgid "New subscribers"
+msgstr ""
+
+msgid "Net change"
+msgstr ""
+
+msgid "Churn breakdown"
+msgstr ""
+
+msgid "Count"
+msgstr ""
+
+msgid "No churn events in this period."
+msgstr ""
+
+msgid "At-risk subscribers"
+msgstr "Iscritti a rischio"
+
+msgid "health < 40"
+msgstr ""
+
+msgid "No at-risk subscribers"
+msgstr ""
+
+msgid "All subscribers have healthy engagement scores."
+msgstr ""
+
+msgid "Health distribution"
+msgstr ""
+
+msgid "Healthy"
+msgstr "Sani"
+
+msgid "At-risk"
+msgstr "A rischio"
+
+msgid "Critical"
+msgstr "Critici"
+
+msgid "Health data will appear once subscribers have health scores."
+msgstr ""
+
+msgid "Period summary"
+msgstr ""
+
+msgid "Active at start"
+msgstr ""
+
+msgid "New in period"
+msgstr ""
+
+msgid "Churned in period"
+msgstr ""
+
+#, python-format
+msgid "Email metrics for the last %(days)s days."
+msgstr ""
+
+msgid "Email delivery and engagement metrics for all campaigns."
+msgstr "Metriche di consegna e coinvolgimento email per tutte le campagne."
+
+msgid "<strong>Delivery rate</strong> — percentage of emails that reached the inbox."
+msgstr "<strong>Tasso di consegna</strong> — percentuale di email arrivate nella casella."
+
+msgid "<strong>Open/Click rate</strong> — engagement metrics (requires tracking to be enabled in config)."
+msgstr "<strong>Tasso apertura/click</strong> — metriche di coinvolgimento (richiede tracciamento abilitato nel config)."
+
+msgid "Emails sent"
+msgstr "Email inviate"
+
+msgid "Email metrics"
+msgstr ""
+
+msgid "Metric"
+msgstr ""
+
+msgid "Rate"
+msgstr ""
+
+msgid "Sequence performance"
+msgstr ""
+
+msgid "enrolled"
+msgstr ""
+
+msgid "completed"
+msgstr ""
+
+msgid "Step"
+msgstr ""
+
+msgid "No sequences yet"
+msgstr ""
+
+msgid "Sequence stats will appear when sequences are running."
+msgstr ""
+
+msgid "List health"
+msgstr "Salute della lista"
+
+msgid "Open churn"
+msgstr "Apri abbandono"
+
+msgid "Subscriber summary"
+msgstr ""
+
+msgid "Total"
+msgstr ""
+
+msgid "New"
+msgstr "Nuovi"
+
+msgid "Avg health"
+msgstr ""
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Skip to content"
+msgstr "Vai al contenuto"
+
+msgid "Main navigation"
+msgstr "Navigazione principale"
+
+msgid "Main"
+msgstr "Principale"
+
+msgid "Subscribers"
+msgstr "Iscritti"
+
+msgid "Campaigns"
+msgstr "Campagne"
+
+msgid "Sequences"
+msgstr "Sequenze"
+
+msgid "Templates"
+msgstr "Modelli"
+
+msgid "Insights"
+msgstr "Statistiche"
+
+msgid "Churn"
+msgstr "Abbandono"
+
+msgid "System"
+msgstr "Sistema"
+
+msgid "Settings"
+msgstr "Impostazioni"
+
+msgid "All systems"
+msgstr "Tutti i sistemi"
+
+msgid "Toggle navigation"
+msgstr "Apri/chiudi navigazione"
+
+msgid "Welcome to Postino. Select an item from the sidebar to begin."
+msgstr ""
+
+msgid "Campaign"
+msgstr ""
+
+msgid "Status"
+msgstr "Stato"
+
+msgid "Email Type"
+msgstr ""
+
+msgid "Template"
+msgstr ""
+
+msgid "Recipients"
+msgstr ""
+
+msgid "Created"
+msgstr ""
+
+#, python-format
+msgid ""
+"\n"
+"        Showing %(from)s–%(to)s of %(total)s\n"
+"      "
+msgstr ""
+
+msgid "No campaigns found"
+msgstr "Nessuna campagna trovata"
+
+msgid "Adjust your filters or create a new campaign."
+msgstr "Modifica i filtri o crea una nuova campagna."
+
+#, python-format
+msgid ""
+"\n"
+"          Scheduled for %(scheduled)s\n"
+"        "
+msgstr ""
+
+#, python-format
+msgid ""
+"\n"
+"          Sent %(sent)s\n"
+"        "
+msgstr ""
+
+msgid "Edit"
+msgstr "Modifica"
+
+msgid "Campaign details"
+msgstr ""
+
+msgid "Email type"
+msgstr "Tipo email"
+
+msgid "Subject line"
+msgstr "Oggetto"
+
+msgid "Recipient count"
+msgstr ""
+
+msgid "Audience filter"
+msgstr ""
+
+msgid "All active subscribers"
+msgstr ""
+
+msgid "Send statistics"
+msgstr ""
+
+msgid "Recent sends"
+msgstr ""
+
+msgid "Subscriber"
+msgstr ""
+
+msgid "Sent at"
+msgstr ""
+
+msgid "Provider ID"
+msgstr ""
+
+msgid "CLI commands"
+msgstr ""
+
+msgid "Edit Campaign"
+msgstr "Modifica Campagna"
+
+msgid "New Campaign"
+msgstr "Nuova Campagna"
+
+msgid "Cancel"
+msgstr "Annulla"
+
+msgid "Campaign name"
+msgstr "Nome campagna"
+
+msgid "Internal name — not shown to subscribers."
+msgstr ""
+
+msgid "Determines consent scope — only subscribers who opted in to this type will receive the campaign."
+msgstr ""
+
+msgid "Email template"
+msgstr "Modello email"
+
+msgid "Overrides the template default subject."
+msgstr ""
+
+msgid "Audience"
+msgstr "Destinatari"
+
+msgid "Tags"
+msgstr "Tag"
+
+msgid "any of"
+msgstr ""
+
+msgid "Health score min"
+msgstr ""
+
+msgid "Health score max"
+msgstr ""
+
+msgid "Scheduled at"
+msgstr "Programmato per"
+
+msgid "(optional)"
+msgstr ""
+
+msgid "Leave blank to save as draft. Set a date/time to schedule."
+msgstr ""
+
+msgid "Save Changes"
+msgstr "Salva Modifiche"
+
+msgid "Create Campaign"
+msgstr "Crea Campagna"
+
+msgid "CLI alternative"
+msgstr ""
+
+#, python-format
+msgid ""
+"\n"
+"      %(counter)s campaign total\n"
+"    "
+msgid_plural ""
+"\n"
+"      %(counter)s campaigns total\n"
+"    "
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Campaigns are one-time email sends to a filtered audience."
+msgstr "Le campagne sono invii email singoli a un pubblico filtrato."
+
+msgid "Create a campaign by selecting a template, defining the audience, and scheduling or sending immediately."
+msgstr "Crea una campagna selezionando un modello, definendo il pubblico e programmando o inviando subito."
+
+msgid "<strong>Draft</strong> — not yet sent. <strong>Scheduled</strong> — will send at the set time. <strong>Sent</strong> — delivery complete."
+msgstr "<strong>Bozza</strong> — non ancora inviata. <strong>Programmata</strong> — sarà inviata all'orario impostato. <strong>Inviata</strong> — consegna completata."
+
+msgid "All"
+msgstr ""
+
+msgid "Search by name or subject..."
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+msgid "Nothing here yet"
+msgstr ""
+
+msgid "Help for this page"
+msgstr "Aiuto per questa pagina"
+
+msgid "Close"
+msgstr "Chiudi"
+
+#, python-format
+msgid ""
+"\n"
+"      Showing %(from)s–%(to)s of %(total)s\n"
+"    "
+msgstr ""
+
+msgid "Email confirmation"
+msgstr ""
+
+msgid "Your email has been confirmed"
+msgstr ""
+
+msgid "You are now subscribed and will receive emails from us."
+msgstr ""
+
+msgid "Invalid or expired confirmation link"
+msgstr ""
+
+msgid "This confirmation link is not valid. It may have already been used or was not intended for you."
+msgstr ""
+
+msgid "Something went wrong"
+msgstr ""
+
+msgid "GDPR Data Deletion"
+msgstr ""
+
+msgid "Delete subscriber data"
+msgstr ""
+
+msgid "This action cannot be undone"
+msgstr ""
+
+#, python-format
+msgid "This will permanently delete all personal data for <strong>%(email)s</strong> (GDPR Art. 17). The subscriber will be set to \"deleted\" status and personal fields will be blanked."
+msgstr ""
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Delete all data"
+msgstr ""
+
+msgid "Data Deleted"
+msgstr ""
+
+msgid "Data deleted"
+msgstr ""
+
+msgid "Personal data has been deleted"
+msgstr ""
+
+#, python-format
+msgid "All personal data for <strong>%(email)s</strong> has been permanently removed. The subscriber status is now \"deleted\"."
+msgstr ""
+
+msgid "Back to subscribers"
+msgstr ""
+
+msgid "GDPR Data Export"
+msgstr ""
+
+msgid "Export subscriber data"
+msgstr ""
+
+#, python-format
+msgid "This will generate a JSON file containing all personal data held for <strong>%(email)s</strong>."
+msgstr ""
+
+msgid "Download JSON"
+msgstr ""
+
+msgid "Email preferences"
+msgstr ""
+
+#, python-format
+msgid "Your account is %(status)s. Per-type preferences cannot be changed."
+msgstr ""
+
+msgid "Email types"
+msgstr "Tipi di email"
+
+msgid "transactional"
+msgstr "transazionale"
+
+msgid "Account actions"
+msgstr ""
+
+msgid "Select an action..."
+msgstr ""
+
+msgid "Deleting your data will permanently remove all information we hold about you."
+msgstr ""
+
+msgid "Save preferences"
+msgstr ""
+
+msgid "Preferences updated"
+msgstr ""
+
+msgid "You have been unsubscribed from all emails."
+msgstr ""
+
+msgid "All your personal data has been removed from our system."
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
+msgid "Your request has been processed."
+msgstr ""
+
+msgid "Unsubscribe"
+msgstr ""
+
+msgid "Choose how you would like to manage your email subscription."
+msgstr ""
+
+msgid "This will permanently remove all data we hold about you."
+msgstr ""
+
+msgid "Confirm"
+msgstr ""
+
+msgid "Unsubscribe confirmed"
+msgstr ""
+
+msgid "Subscription updated"
+msgstr ""
+
+msgid "You have been unsubscribed from that email type."
+msgstr ""
+
+msgid "You will no longer receive marketing emails from us."
+msgstr ""
+
+msgid "Overview of subscribers, campaigns, and list health."
+msgstr "Panoramica di iscritti, campagne e salute della lista."
+
+msgid "Export"
+msgstr "Esporta"
+
+msgid "New campaign"
+msgstr "Nuova campagna"
+
+msgid "The dashboard shows a real-time overview of your email marketing activity."
+msgstr "La dashboard mostra una panoramica in tempo reale della tua attività di email marketing."
+
+msgid "<strong>Active subscribers</strong> — total confirmed subscribers who can receive emails."
+msgstr "<strong>Iscritti attivi</strong> — totale iscritti confermati che possono ricevere email."
+
+msgid "<strong>Emails sent</strong> — total emails delivered in the last 30 days."
+msgstr "<strong>Email inviate</strong> — totale email consegnate negli ultimi 30 giorni."
+
+msgid "<strong>Health score</strong> — average engagement score across all subscribers (0-100)."
+msgstr "<strong>Punteggio salute</strong> — punteggio medio di coinvolgimento di tutti gli iscritti (0-100)."
+
+msgid "<strong>Churn rate</strong> — percentage of subscribers lost in the last 30 days."
+msgstr "<strong>Tasso di abbandono</strong> — percentuale di iscritti persi negli ultimi 30 giorni."
+
+msgid "The growth chart shows new subscribers vs. churned over the last 6 months."
+msgstr "Il grafico di crescita mostra nuovi iscritti vs. persi negli ultimi 6 mesi."
+
+msgid "Active subscribers"
+msgstr "Iscritti attivi"
+
+msgid "vs. last month"
+msgstr "rispetto al mese scorso"
+
+msgid "Emails sent (30d)"
+msgstr "Email inviate (30g)"
+
+msgid "vs. previous 30d"
+msgstr "rispetto ai 30g precedenti"
+
+msgid "Avg health score"
+msgstr "Punteggio salute medio"
+
+msgid "Churn rate (30d)"
+msgstr "Tasso di abbandono (30g)"
+
+msgid "rolling, vs. previous 30d"
+msgstr "rolling, rispetto ai 30g precedenti"
+
+msgid "Subscriber growth"
+msgstr "Crescita iscritti"
+
+msgid "Last 6 months · new vs. churned"
+msgstr ""
+
+msgid "Growth data will appear once you have subscribers."
+msgstr ""
+
+msgid "Recent campaigns"
+msgstr "Campagne recenti"
+
+msgid "View all"
+msgstr "Vedi tutto"
+
+msgid "Name"
+msgstr "Nome"
+
+msgid "No campaigns yet"
+msgstr ""
+
+msgid "Create your first campaign to see it here."
+msgstr ""
+
+msgid "top 5"
+msgstr "top 5"
+
+msgid "last active"
+msgstr ""
+
+msgid "No at-risk subscribers."
+msgstr ""
+
+#, python-format
+msgid "Hi %(name)s,"
+msgstr ""
+
+#, python-format
+msgid "You received this email because you are subscribed to %(name)s."
+msgstr ""
+
+msgid "Steps"
+msgstr ""
+
+#, python-format
+msgid ""
+"\n"
+"                %(hours)sh delay\n"
+"              "
+msgid_plural ""
+"\n"
+"                %(hours)sh delay\n"
+"              "
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Remove step"
+msgstr ""
+
+msgid "Remove this step?"
+msgstr ""
+
+msgid "No steps yet. Add the first step below."
+msgstr ""
+
+msgid "Delay (hours)"
+msgstr ""
+
+msgid "Subject (optional)"
+msgstr ""
+
+msgid "Uses template default"
+msgstr ""
+
+msgid "Add Step"
+msgstr ""
+
+msgid "Enrollments"
+msgstr ""
+
+msgid "Enrolled"
+msgstr ""
+
+msgid "No enrollments yet."
+msgstr ""
+
+msgid "Edit Sequence"
+msgstr ""
+
+msgid "New Sequence"
+msgstr "Nuova Sequenza"
+
+msgid "Create Sequence"
+msgstr ""
+
+#, python-format
+msgid ""
+"\n"
+"      %(counter)s sequence total\n"
+"    "
+msgid_plural ""
+"\n"
+"      %(counter)s sequences total\n"
+"    "
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "active"
+msgstr ""
+
+msgid "Sequences are automated multi-step email flows triggered by events."
+msgstr "Le sequenze sono flussi email automatizzati a più passi attivati da eventi."
+
+msgid "<strong>Triggers</strong> — start when a subscriber is created, a tag is added, or manually enrolled."
+msgstr "<strong>Trigger</strong> — partono quando un iscritto viene creato, un tag aggiunto, o manualmente iscritto."
+
+msgid "Each step has a delay and optional conditions. Subscribers progress automatically."
+msgstr "Ogni passo ha un ritardo e condizioni opzionali. Gli iscritti progrediscono automaticamente."
+
+msgid "Trigger"
+msgstr ""
+
+msgid "No sequences yet. Create your first automated email flow."
+msgstr ""
+
+msgid "App configuration, email types, and data sources."
+msgstr "Configurazione app, tipi di email e sorgenti dati."
+
+msgid "View and manage application configuration."
+msgstr "Visualizza e gestisci la configurazione dell'applicazione."
+
+msgid "<strong>General</strong> — app name, timezone, email provider (read-only from config.toml)."
+msgstr "<strong>Generale</strong> — nome app, fuso orario, provider email (sola lettura da config.toml)."
+
+msgid "<strong>Email types</strong> — categories like newsletter, product updates. Subscribers consent per type."
+msgstr "<strong>Tipi di email</strong> — categorie come newsletter, aggiornamenti prodotto. Gli iscritti danno il consenso per tipo."
+
+msgid "<strong>Data sources</strong> — external databases synced to import subscribers."
+msgstr "<strong>Sorgenti dati</strong> — database esterni sincronizzati per importare iscritti."
+
+msgid "<strong>Language</strong> — switch the dashboard language between English and Italian."
+msgstr "<strong>Lingua</strong> — cambia la lingua dell'interfaccia tra inglese e italiano."
+
+msgid "General"
+msgstr "Generale"
+
+msgid "Data sources"
+msgstr "Sorgenti dati"
+
+msgid "Language"
+msgstr "Lingua"
+
+msgid "Application"
+msgstr "Applicazione"
+
+msgid "App name"
+msgstr "Nome app"
+
+msgid "Configured in config.toml [branding] section."
+msgstr "Configurato nella sezione [branding] di config.toml."
+
+msgid "Timezone"
+msgstr "Fuso orario"
+
+msgid "Base URL"
+msgstr "URL base"
+
+msgid "Email provider"
+msgstr "Provider email"
+
+msgid "Provider"
+msgstr "Provider"
+
+msgid "From name"
+msgstr "Nome mittente"
+
+msgid "From email"
+msgstr "Email mittente"
+
+msgid "GDPR & Privacy"
+msgstr "GDPR e Privacy"
+
+msgid "Double opt-in"
+msgstr "Doppia conferma"
+
+msgid "Required"
+msgstr "Obbligatoria"
+
+msgid "Disabled"
+msgstr "Disabilitata"
+
+msgid "Retention (unsubscribed)"
+msgstr "Conservazione (disiscritti)"
+
+msgid "days"
+msgstr "giorni"
+
+msgid "Open tracking"
+msgstr "Tracciamento aperture"
+
+msgid "Enabled"
+msgstr "Abilitato"
+
+msgid "Disabled (default)"
+msgstr "Disabilitato (predefinito)"
+
+msgid "Click tracking"
+msgstr "Tracciamento click"
+
+msgid "Add email type"
+msgstr "Aggiungi tipo email"
+
+msgid "Slug"
+msgstr "Slug"
+
+msgid "Description"
+msgstr "Descrizione"
+
+msgid "Transactional"
+msgstr "Transazionale"
+
+msgid "No email types configured yet."
+msgstr "Nessun tipo di email configurato."
+
+msgid "configured in config.toml"
+msgstr "configurato in config.toml"
+
+msgid "last sync"
+msgstr "ultima sincronizzazione"
+
+msgid "ago"
+msgstr "fa"
+
+msgid "never synced"
+msgstr "mai sincronizzato"
+
+msgid "No data sources configured. Add sources in config.toml [sources] section."
+msgstr "Nessuna sorgente dati configurata. Aggiungi sorgenti nella sezione [sources] di config.toml."
+
+msgid "Dashboard language"
+msgstr "Lingua dell'interfaccia"
+
+msgid "Choose your preferred language for the dashboard interface."
+msgstr "Scegli la lingua preferita per l'interfaccia."
+
+msgid "current"
+msgstr "attuale"
+
+msgid "Save language"
+msgstr "Salva lingua"
+
+msgid "Bulk actions"
+msgstr ""
+
+msgid "Apply tag"
+msgstr ""
+
+msgid "Suppress reason"
+msgstr ""
+
+msgid "Suppress"
+msgstr "Sopprimi"
+
+msgid "Export CSV"
+msgstr ""
+
+msgid "Email / Name"
+msgstr ""
+
+msgid "Health"
+msgstr "Salute"
+
+msgid "Source"
+msgstr "Sorgente"
+
+msgid "Select subscriber"
+msgstr ""
+
+msgid "No subscribers found"
+msgstr "Nessun iscritto trovato"
+
+msgid "Import subscribers or adjust your filters."
+msgstr "Importa iscritti o modifica i filtri."
+
+msgid "Import CSV"
+msgstr "Importa CSV"
+
+msgid "Subscriber Detail"
+msgstr ""
+
+msgid "Profile"
+msgstr "Profilo"
+
+msgid "Health score"
+msgstr ""
+
+msgid "Last activity"
+msgstr ""
+
+msgid "Never"
+msgstr ""
+
+msgid "Updated"
+msgstr ""
+
+msgid "Consent history"
+msgstr "Storico consensi"
+
+msgid "Action"
+msgstr ""
+
+msgid "Method"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "No consent records."
+msgstr ""
+
+msgid "Unsubscribe events"
+msgstr ""
+
+msgid "IP"
+msgstr ""
+
+msgid "No unsubscribe events."
+msgstr ""
+
+msgid "No tags."
+msgstr ""
+
+msgid "Metadata"
+msgstr "Metadati"
+
+msgid "No metadata."
+msgstr ""
+
+msgid "CLI"
+msgstr ""
+
+msgid "Import Subscribers"
+msgstr ""
+
+msgid "Upload a CSV file to add subscribers in bulk."
+msgstr ""
+
+msgid "CSV File"
+msgstr ""
+
+msgid "Required column: email. Optional: name, tag."
+msgstr ""
+
+msgid "Default Tag"
+msgstr ""
+
+msgid "Import Results"
+msgstr ""
+
+msgid "Suppressed"
+msgstr ""
+
+msgid "Errors"
+msgstr ""
+
+#, python-format
+msgid ""
+"\n"
+"          %(counter)s subscriber was skipped because they are suppressed (unsubscribed, bounced, or complained).\n"
+"        "
+msgid_plural ""
+"\n"
+"          %(counter)s subscribers were skipped because they are suppressed (unsubscribed, bounced, or complained).\n"
+"        "
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid ""
+"\n"
+"      %(counter)s subscriber total\n"
+"    "
+msgid_plural ""
+"\n"
+"      %(counter)s subscribers total\n"
+"    "
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Manage your subscriber list. Search, filter by status or tag, and view health scores."
+msgstr "Gestisci la tua lista di iscritti. Cerca, filtra per stato o tag, e visualizza i punteggi salute."
+
+msgid "<strong>Import CSV</strong> — bulk-add subscribers from a file."
+msgstr "<strong>Importa CSV</strong> — aggiungi iscritti in blocco da un file."
+
+msgid "<strong>Health score</strong> — engagement metric from 0 (inactive) to 100 (highly engaged)."
+msgstr "<strong>Punteggio salute</strong> — metrica di coinvolgimento da 0 (inattivo) a 100 (molto coinvolto)."
+
+msgid "<strong>Bulk actions</strong> — select subscribers with checkboxes to tag, export, or suppress."
+msgstr "<strong>Azioni di massa</strong> — seleziona iscritti con le checkbox per taggare, esportare o sopprimere."
+
+msgid "Search by email or name..."
+msgstr "Cerca per email o nome..."
+
+msgid "All tags"
+msgstr "Tutti i tag"
+
+msgid "Health <"
+msgstr ""
+
+msgid "No preview available."
+msgstr "Nessuna anteprima disponibile."
+
+msgid "Subject"
+msgstr ""
+
+msgid "No templates found"
+msgstr "Nessun modello trovato"
+
+msgid "Create your first email template to get started."
+msgstr "Crea il tuo primo modello email per iniziare."
+
+msgid "New Template"
+msgstr "Nuovo Modello"
+
+msgid "Template details"
+msgstr ""
+
+msgid "Default subject"
+msgstr ""
+
+msgid "Has plain text"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "Preview"
+msgstr "Anteprima"
+
+msgid "Rendered with sample data"
+msgstr ""
+
+msgid "Rendering error"
+msgstr ""
+
+msgid "HTML preview"
+msgstr ""
+
+msgid "HTML email preview"
+msgstr ""
+
+msgid "Plain text preview"
+msgstr ""
+
+msgid "Campaigns using this template"
+msgstr ""
+
+msgid "Edit Template"
+msgstr "Modifica Modello"
+
+msgid "Save"
+msgstr "Salva"
+
+msgid "Editor"
+msgstr "Editor"
+
+msgid "Available variables"
+msgstr "Variabili disponibili"
+
+msgid "rendered with sample data"
+msgstr "renderizzato con dati di esempio"
+
+msgid "Refresh"
+msgstr "Aggiorna"
+
+msgid "Plain text body (optional)"
+msgstr "Corpo testo (opzionale)"
+
+msgid "Plain text body"
+msgstr "Corpo testo"
+
+msgid "optional"
+msgstr "opzionale"
+
+msgid "Create Template"
+msgstr "Crea Modello"
+
+#, python-format
+msgid ""
+"\n"
+"      %(counter)s template total\n"
+"    "
+msgid_plural ""
+"\n"
+"      %(counter)s templates total\n"
+"    "
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Email templates define the HTML content sent to subscribers."
+msgstr "I modelli email definiscono il contenuto HTML inviato agli iscritti."
+
+msgid "Templates use Django template syntax with variables like {{ subscriber.name }} and {{ unsubscribe_url }}."
+msgstr ""
+
+msgid "The unsubscribe footer and List-Unsubscribe headers are added automatically."
+msgstr "Il footer di disiscrizione e gli header List-Unsubscribe vengono aggiunti automaticamente."
+
+msgid "Search by name or slug..."
+msgstr ""

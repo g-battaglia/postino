@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "GDPR Data Export" %}{% endblock %}
+
+{% block breadcrumb %}{% trans "Subscribers" %}{% endblock %}
+
+{% block nav_subscribers_class %}bg-indigo-500/20 text-white{% endblock %}
+
+{% block page_title %}{% trans "Export subscriber data" %}{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto bg-white border border-gray-200 rounded-[10px] p-6">
+  <p class="text-[13px] text-gray-600 mb-4">
+    {% blocktrans with email=subscriber.email %}This will generate a JSON file containing all personal data held for <strong>{{ email }}</strong>.{% endblocktrans %}
+  </p>
+
+  <dl class="text-[13px] mb-6">
+    <dt class="text-gray-500">{% trans "Email" %}</dt>
+    <dd class="font-medium mb-2">{{ subscriber.email }}</dd>
+    <dt class="text-gray-500">{% trans "Status" %}</dt>
+    <dd class="font-medium mb-2">{{ subscriber.status }}</dd>
+    <dt class="text-gray-500">{% trans "Created" %}</dt>
+    <dd class="font-medium">{{ subscriber.created_at }}</dd>
+  </dl>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="flex gap-3">
+      <button type="submit"
+              class="px-4 py-2 text-[13px] font-medium rounded-md bg-indigo-500 text-white hover:bg-indigo-600 transition-colors">
+        {% trans "Download JSON" %}
+      </button>
+      <a href="{% url 'subscribers:detail' subscriber_id=subscriber.id %}"
+         class="px-4 py-2 text-[13px] font-medium rounded-md border border-gray-200 hover:bg-gray-50 transition-colors">
+        {% trans "Cancel" %}
+      </a>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,99 @@
+{# Pagination component.
+   Required context: page_obj (Django Page object), hx_target (optional HTMX target ID)
+   Usage: {% include "components/pagination.html" with page_obj=page_obj hx_target="#subscriber-table" %} #}
+{% spaceless %}
+{% load i18n %}
+
+{% if page_obj and page_obj.paginator.num_pages > 1 %}
+<div class="flex items-center gap-1 px-4 py-3 border-t border-gray-200 text-[13px] bg-white rounded-b-[10px]">
+  <span class="text-gray-500">
+    {% blocktrans with from=page_obj.start_index|default:"0" to=page_obj.end_index|default:"0" total=page_obj.paginator.count %}
+      Showing {{ from }}–{{ to }} of {{ total }}
+    {% endblocktrans %}
+  </span>
+  <span class="flex-1"></span>
+
+  {% if page_obj.has_previous %}
+    {% if hx_target %}
+    <a href="?page={{ page_obj.previous_page_number }}"
+       hx-get="?page={{ page_obj.previous_page_number }}"
+       hx-target="{{ hx_target }}"
+       hx-swap="outerHTML"
+       class="min-w-[28px] h-7 px-2 bg-white border border-gray-200 rounded-[5px]
+              text-[12.5px] text-gray-700 cursor-pointer tabular-nums
+              hover:bg-gray-50 inline-flex items-center justify-center">
+      {% include "components/icon.html" with name="chevLeft" size=12 %}
+    </a>
+    {% else %}
+    <a href="?page={{ page_obj.previous_page_number }}"
+       class="min-w-[28px] h-7 px-2 bg-white border border-gray-200 rounded-[5px]
+              text-[12.5px] text-gray-700 cursor-pointer tabular-nums
+              hover:bg-gray-50 inline-flex items-center justify-center">
+      {% include "components/icon.html" with name="chevLeft" size=12 %}
+    </a>
+    {% endif %}
+  {% else %}
+  <span class="min-w-[28px] h-7 px-2 bg-white border border-gray-200 rounded-[5px]
+               text-[12.5px] text-gray-400 cursor-not-allowed opacity-40
+               inline-flex items-center justify-center">
+    {% include "components/icon.html" with name="chevLeft" size=12 %}
+  </span>
+  {% endif %}
+
+  {% for num in page_obj.paginator.page_range %}
+    {% if page_obj.number == num %}
+    <span class="min-w-[28px] h-7 px-2 bg-gray-900 text-white border border-gray-900 rounded-[5px]
+                 text-[12.5px] tabular-nums inline-flex items-center justify-center">
+      {{ num }}
+    </span>
+    {% elif num %}
+      {% if hx_target %}
+      <a href="?page={{ num }}"
+         hx-get="?page={{ num }}"
+         hx-target="{{ hx_target }}"
+         hx-swap="outerHTML"
+         class="min-w-[28px] h-7 px-2 bg-white border border-gray-200 rounded-[5px]
+                text-[12.5px] text-gray-700 cursor-pointer tabular-nums
+                hover:bg-gray-50 inline-flex items-center justify-center">
+        {{ num }}
+      </a>
+      {% else %}
+      <a href="?page={{ num }}"
+         class="min-w-[28px] h-7 px-2 bg-white border border-gray-200 rounded-[5px]
+                text-[12.5px] text-gray-700 cursor-pointer tabular-nums
+                hover:bg-gray-50 inline-flex items-center justify-center">
+        {{ num }}
+      </a>
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+
+  {% if page_obj.has_next %}
+    {% if hx_target %}
+    <a href="?page={{ page_obj.next_page_number }}"
+       hx-get="?page={{ page_obj.next_page_number }}"
+       hx-target="{{ hx_target }}"
+       hx-swap="outerHTML"
+       class="min-w-[28px] h-7 px-2 bg-white border border-gray-200 rounded-[5px]
+              text-[12.5px] text-gray-700 cursor-pointer tabular-nums
+              hover:bg-gray-50 inline-flex items-center justify-center">
+      {% include "components/icon.html" with name="chevRight" size=12 %}
+    </a>
+    {% else %}
+    <a href="?page={{ page_obj.next_page_number }}"
+       class="min-w-[28px] h-7 px-2 bg-white border border-gray-200 rounded-[5px]
+              text-[12.5px] text-gray-700 cursor-pointer tabular-nums
+              hover:bg-gray-50 inline-flex items-center justify-center">
+      {% include "components/icon.html" with name="chevRight" size=12 %}
+    </a>
+    {% endif %}
+  {% else %}
+  <span class="min-w-[28px] h-7 px-2 bg-white border border-gray-200 rounded-[5px]
+               text-[12.5px] text-gray-400 cursor-not-allowed opacity-40
+               inline-flex items-center justify-center">
+    {% include "components/icon.html" with name="chevRight" size=12 %}
+  </span>
+  {% endif %}
+</div>
+{% endif %}
+{% endspaceless %}

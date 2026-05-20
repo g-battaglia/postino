@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Templates" %}{% endblock %}
+
+{% block breadcrumb %}{% trans "Templates" %}{% endblock %}
+
+{% block nav_templates_class %}bg-indigo-500/20 text-white{% endblock %}
+
+{% block page_title %}{% trans "Templates" %}{% endblock %}
+{% block page_subtitle %}
+  <div class="text-[13px] text-gray-500 mt-1">
+    {% blocktrans count counter=total_count %}
+      {{ counter }} template total
+    {% plural %}
+      {{ counter }} templates total
+    {% endblocktrans %}
+  </div>
+{% endblock %}
+
+{% block page_actions %}
+  <a href="{% url 'templates_mgr:create' %}"
+     class="inline-flex items-center gap-1.5 px-3 py-[7px] text-[13px] font-medium rounded-md
+            bg-indigo-500 text-white hover:bg-indigo-600 transition-colors">
+    {% include "components/icon.html" with name="plus" size=14 %}
+    {% trans "New Template" %}
+  </a>
+{% endblock %}
+
+{% block help_widget %}
+<button onclick="document.getElementById('help-dialog').showModal()"
+        class="fixed bottom-6 right-6 z-50 w-10 h-10 rounded-full bg-indigo-500 hover:bg-indigo-600 text-white shadow-lg flex items-center justify-center text-lg font-semibold transition-colors cursor-pointer"
+        aria-label="{% trans 'Help' %}">?</button>
+<dialog id="help-dialog" class="fixed inset-0 m-auto max-w-md w-[calc(100%-2rem)] rounded-xl border border-gray-200 shadow-2xl p-0 backdrop:bg-black/30">
+  <div class="px-6 pt-5 pb-4">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center flex-shrink-0">
+        {% include "components/icon.html" with name="info" size=16 %}
+      </div>
+      <h3 class="text-base font-semibold text-gray-900 m-0 flex-1">{% trans "Templates" %}</h3>
+      <button onclick="document.getElementById('help-dialog').close()" class="text-gray-400 hover:text-gray-600">
+        {% include "components/icon.html" with name="x" size=18 %}
+      </button>
+    </div>
+    <div class="text-sm text-gray-600 leading-relaxed space-y-2 pl-11">
+      <p>{% trans "Email templates define the HTML content sent to subscribers." %}</p><p>{% trans "Templates use Django template syntax with variables like {{ subscriber.name }} and {{ unsubscribe_url }}." %}</p><p>{% trans "The unsubscribe footer and List-Unsubscribe headers are added automatically." %}</p>
+    </div>
+  </div>
+  <div class="px-6 py-3 bg-gray-50 border-t border-gray-100 rounded-b-xl">
+    <button onclick="document.getElementById('help-dialog').close()" class="text-sm font-medium text-gray-700 hover:text-gray-900">{% trans "Got it" %}</button>
+  </div>
+</dialog>
+{% endblock %}
+
+{% block content %}
+{# Filter bar #}
+<div class="bg-white border border-gray-200 rounded-[10px] mb-4">
+  <form method="get" class="flex flex-wrap items-center gap-3 px-4 py-3"
+        id="template-filters">
+    {# Search #}
+    <div class="relative flex-1 min-w-[180px]">
+      <div class="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400">
+        {% include "components/icon.html" with name="search" size=14 %}
+      </div>
+      <input type="text" name="q" value="{{ current_q }}"
+             placeholder="{% trans 'Search by name or slug...' %}"
+             hx-get="{% url 'templates_mgr:list' %}"
+             hx-target="#template-table"
+             hx-swap="outerHTML"
+             hx-trigger="keyup changed delay:300ms"
+             hx-include="#template-filters"
+             class="w-full h-8 pl-8 pr-3 text-[13px] border border-gray-200 rounded-md
+                    bg-gray-50 focus:bg-white focus:border-indigo-300 focus:ring-1
+                    focus:ring-indigo-200 outline-none transition-colors">
+    </div>
+
+    {# Clear filters #}
+    {% if current_q %}
+    <a href="{% url 'templates_mgr:list' %}"
+       class="text-[12px] text-gray-500 hover:text-gray-700 inline-flex items-center gap-1">
+      {% include "components/icon.html" with name="x" size=12 %}
+      {% trans "Clear" %}
+    </a>
+    {% endif %}
+  </form>
+</div>
+
+{# Template table (partial included for HTMX support) #}
+{% include "templates_mgr/_table.html" %}
+{% endblock %}

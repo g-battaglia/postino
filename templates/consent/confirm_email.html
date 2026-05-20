@@ -1,0 +1,47 @@
+{% load i18n %}<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% trans "Email confirmation" %}</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #fafafa;
+      color: #111827;
+      margin: 0;
+      padding: 2rem 1rem;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      padding: 2rem;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+    }
+    h1 { font-size: 1.25rem; font-weight: 600; margin: 0 0 0.5rem; }
+    p { color: #6b7280; font-size: 0.9375rem; margin: 0; }
+    .icon { font-size: 2rem; margin-bottom: 0.75rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    {% if success %}
+      <div class="icon" aria-hidden="true">&#10003;</div>
+      <h1>{% trans "Your email has been confirmed" %}</h1>
+      <p>{% trans "You are now subscribed and will receive emails from us." %}</p>
+    {% else %}
+      <div class="icon" aria-hidden="true">&#10007;</div>
+      <h1>{% trans "Invalid or expired confirmation link" %}</h1>
+      <p>{% trans "This confirmation link is not valid. It may have already been used or was not intended for you." %}</p>
+    {% endif %}
+  </div>
+</body>
+</html>

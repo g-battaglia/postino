@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Churn Dashboard" %}{% endblock %}
+
+{% block breadcrumb %}{% trans "Analytics" %}{% endblock %}
+
+{% block nav_churn_class %}bg-indigo-500/20 text-white{% endblock %}
+
+{% block page_title %}{% trans "Churn dashboard" %}{% endblock %}
+{% block page_subtitle %}
+  <div class="text-[13px] text-gray-500 mt-1">
+    {% blocktrans with days=days %}Churn analysis for the last {{ days }} days.{% endblocktrans %}
+  </div>
+{% endblock %}
+
+{% block page_actions %}
+  <div class="flex items-center gap-2 text-[13px]">
+    <a href="?days=7" class="px-2.5 py-1 rounded-md border border-gray-200 hover:bg-gray-50 {% if days == 7 %}bg-indigo-50 border-indigo-200 text-indigo-700{% endif %}">7d</a>
+    <a href="?days=30" class="px-2.5 py-1 rounded-md border border-gray-200 hover:bg-gray-50 {% if days == 30 %}bg-indigo-50 border-indigo-200 text-indigo-700{% endif %}">30d</a>
+    <a href="?days=90" class="px-2.5 py-1 rounded-md border border-gray-200 hover:bg-gray-50 {% if days == 90 %}bg-indigo-50 border-indigo-200 text-indigo-700{% endif %}">90d</a>
+  </div>
+{% endblock %}
+
+{% block help_widget %}
+<button onclick="document.getElementById('help-dialog').showModal()"
+        class="fixed bottom-6 right-6 z-50 w-10 h-10 rounded-full bg-indigo-500 hover:bg-indigo-600 text-white shadow-lg flex items-center justify-center text-lg font-semibold transition-colors cursor-pointer"
+        aria-label="{% trans 'Help' %}">?</button>
+<dialog id="help-dialog" class="fixed inset-0 m-auto max-w-md w-[calc(100%-2rem)] rounded-xl border border-gray-200 shadow-2xl p-0 backdrop:bg-black/30">
+  <div class="px-6 pt-5 pb-4">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center flex-shrink-0">
+        {% include "components/icon.html" with name="info" size=16 %}
+      </div>
+      <h3 class="text-base font-semibold text-gray-900 m-0 flex-1">{% trans "Churn Dashboard" %}</h3>
+      <button onclick="document.getElementById('help-dialog').close()" class="text-gray-400 hover:text-gray-600">
+        {% include "components/icon.html" with name="x" size=18 %}
+      </button>
+    </div>
+    <div class="text-sm text-gray-600 leading-relaxed space-y-2 pl-11">
+      <p>{% trans "Churn analysis shows subscriber retention and at-risk users." %}</p><p>{% trans "<strong>Health distribution</strong> — breakdown of subscribers by engagement score." %}</p><p>{% trans "<strong>At-risk subscribers</strong> — low health score, likely to unsubscribe." %}</p><p>{% trans "Use this data to target win-back campaigns." %}</p>
+    </div>
+  </div>
+  <div class="px-6 py-3 bg-gray-50 border-t border-gray-100 rounded-b-xl">
+    <button onclick="document.getElementById('help-dialog').close()" class="text-sm font-medium text-gray-700 hover:text-gray-900">{% trans "Got it" %}</button>
+  </div>
+</dialog>
+{% endblock %}
+
+{% block content %}
+{# Stat cards #}
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+  {% include "components/stat_card.html" with label=_("Churn rate") value=churn.churn_rate meta="%" %}
+  {% include "components/stat_card.html" with label=_("Churned") value=churn.churned_in_period meta=_("in period") %}
+  {% include "components/stat_card.html" with label=_("New subscribers") value=churn.new_in_period %}
+  {% include "components/stat_card.html" with label=_("Net change") value=churn.net_change %}
+</div>
+
+{# Two-column layout #}
+<div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] gap-6">
+  {# Left column #}
+  <div class="flex flex-col gap-6">
+    {# Churn breakdown #}
+    <div class="bg-white border border-gray-200 rounded-[10px]">
+      <div class="px-5 py-4 border-b border-gray-200">
+        <h3 class="text-[14px] font-semibold tracking-tight m-0">{% trans "Churn breakdown" %}</h3>
+      </div>
+      <div class="p-5">
+        <table class="w-full border-collapse text-[13px]">
+          <thead>
+            <tr>
+              <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500 px-3 py-2 bg-gray-50 border-b border-gray-200">{% trans "Reason" %}</th>
+              <th class="text-right text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500 px-3 py-2 bg-gray-50 border-b border-gray-200">{% trans "Count" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for reason, count in churn.churned_by_reason.items %}
+            <tr class="hover:bg-gray-50">
+              <td class="px-3 py-2.5 border-b border-gray-100 capitalize">{{ reason }}</td>
+              <td class="px-3 py-2.5 border-b border-gray-100 text-right tabular-nums">{{ count }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="2" class="px-3 py-4 text-center text-gray-400">{% trans "No churn events in this period." %}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    {# At-risk subscribers #}
+    <div class="bg-white border border-gray-200 rounded-[10px]">
+      <div class="px-5 py-4 border-b border-gray-200 flex items-center gap-3">
+        <h3 class="text-[14px] font-semibold tracking-tight m-0">{% trans "At-risk subscribers" %}</h3>
+        <span class="text-[12px] text-gray-500">{% trans "health < 40" %}</span>
+      </div>
+      {% if churn.at_risk_subscribers %}
+      <div class="divide-y divide-gray-100">
+        {% for s in churn.at_risk_subscribers %}
+        <div class="flex gap-3.5 px-4 py-3 hover:bg-gray-50 cursor-pointer items-center">
+          <div class="flex-1 min-w-0">
+            <div class="font-medium text-[13.5px] text-gray-900">{{ s.name|default:s.email }}</div>
+            <div class="text-[12px] text-gray-500 mt-0.5">
+              <span class="font-mono text-[11.5px]">{{ s.email }}</span>
+            </div>
+          </div>
+          <div class="w-[76px]">
+            {% include "components/health_bar.html" with score=s.health_score %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      {% include "components/empty_state.html" with icon="users" title=_("No at-risk subscribers") message=_("All subscribers have healthy engagement scores.") %}
+      {% endif %}
+    </div>
+  </div>
+
+  {# Right column #}
+  <div class="flex flex-col gap-6">
+    {# Health distribution #}
+    <div class="bg-white border border-gray-200 rounded-[10px]">
+      <div class="px-5 py-4 border-b border-gray-200">
+        <h3 class="text-[14px] font-semibold tracking-tight m-0">{% trans "Health distribution" %}</h3>
+      </div>
+      <div class="p-5">
+        {% if health_distribution.total > 0 %}
+        <div class="flex h-3 rounded-full overflow-hidden bg-gray-100">
+          {% if health_distribution.healthy_pct > 0 %}
+          <div class="h-full bg-emerald-500" style="width: {{ health_distribution.healthy_pct }}%;"></div>
+          {% endif %}
+          {% if health_distribution.at_risk_pct > 0 %}
+          <div class="h-full bg-amber-500" style="width: {{ health_distribution.at_risk_pct }}%;"></div>
+          {% endif %}
+          {% if health_distribution.critical_pct > 0 %}
+          <div class="h-full bg-red-500" style="width: {{ health_distribution.critical_pct }}%;"></div>
+          {% endif %}
+        </div>
+        <div class="flex justify-between gap-3 mt-3.5 flex-wrap">
+          <div class="text-[12px] text-gray-600 flex flex-col gap-0.5">
+            <span class="flex items-center gap-1.5 font-medium text-gray-700">
+              <span class="w-2 h-2 rounded-[2px] bg-emerald-500 inline-block"></span>
+              {% trans "Healthy" %}
+            </span>
+            <span class="text-[18px] font-semibold text-gray-900 tabular-nums tracking-tight">
+              {{ health_distribution.healthy_count }}
+            </span>
+            <span class="text-[11.5px]">{{ health_distribution.healthy_pct|floatformat:1 }}%</span>
+          </div>
+          <div class="text-[12px] text-gray-600 flex flex-col gap-0.5">
+            <span class="flex items-center gap-1.5 font-medium text-gray-700">
+              <span class="w-2 h-2 rounded-[2px] bg-amber-500 inline-block"></span>
+              {% trans "At-risk" %}
+            </span>
+            <span class="text-[18px] font-semibold text-gray-900 tabular-nums tracking-tight">
+              {{ health_distribution.at_risk_count }}
+            </span>
+            <span class="text-[11.5px]">{{ health_distribution.at_risk_pct|floatformat:1 }}%</span>
+          </div>
+          <div class="text-[12px] text-gray-600 flex flex-col gap-0.5">
+            <span class="flex items-center gap-1.5 font-medium text-gray-700">
+              <span class="w-2 h-2 rounded-[2px] bg-red-500 inline-block"></span>
+              {% trans "Critical" %}
+            </span>
+            <span class="text-[18px] font-semibold text-gray-900 tabular-nums tracking-tight">
+              {{ health_distribution.critical_count }}
+            </span>
+            <span class="text-[11.5px]">{{ health_distribution.critical_pct|floatformat:1 }}%</span>
+          </div>
+        </div>
+        {% else %}
+        <div class="py-8 text-center text-gray-400 text-[13px]">
+          {% trans "Health data will appear once subscribers have health scores." %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {# Period summary #}
+    <div class="bg-white border border-gray-200 rounded-[10px]">
+      <div class="px-5 py-4 border-b border-gray-200">
+        <h3 class="text-[14px] font-semibold tracking-tight m-0">{% trans "Period summary" %}</h3>
+      </div>
+      <div class="p-5">
+        <div class="flex flex-col gap-3">
+          <div class="flex justify-between text-[13px]">
+            <span class="text-gray-500">{% trans "Active at start" %}</span>
+            <span class="font-medium tabular-nums">{{ churn.active_at_start }}</span>
+          </div>
+          <div class="flex justify-between text-[13px]">
+            <span class="text-gray-500">{% trans "New in period" %}</span>
+            <span class="font-medium tabular-nums text-emerald-600">+{{ churn.new_in_period }}</span>
+          </div>
+          <div class="flex justify-between text-[13px]">
+            <span class="text-gray-500">{% trans "Churned in period" %}</span>
+            <span class="font-medium tabular-nums text-red-600">-{{ churn.churned_in_period }}</span>
+          </div>
+          <div class="flex justify-between text-[13px] pt-2 border-t border-gray-100">
+            <span class="text-gray-500">{% trans "Net change" %}</span>
+            <span class="font-semibold tabular-nums {% if churn.net_change >= 0 %}text-emerald-600{% else %}text-red-600{% endif %}">
+              {% if churn.net_change >= 0 %}+{% endif %}{{ churn.net_change }}
+            </span>
+          </div>
+          <div class="flex justify-between text-[13px]">
+            <span class="text-gray-500">{% trans "Churn rate" %}</span>
+            <span class="font-semibold tabular-nums">{{ churn.churn_rate }}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

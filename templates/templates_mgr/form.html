@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}
+  {% if is_edit %}{% trans "Edit Template" %}{% else %}{% trans "New Template" %}{% endif %}
+{% endblock %}
+
+{% block breadcrumb %}
+  <a href="{% url 'templates_mgr:list' %}" class="text-gray-500 hover:text-gray-700">{% trans "Templates" %}</a>
+  {% include "components/icon.html" with name="chevRight" size=12 %}
+  {% if is_edit %}{{ template.name }}{% else %}{% trans "New" %}{% endif %}
+{% endblock %}
+
+{% block nav_templates_class %}bg-indigo-500/20 text-white{% endblock %}
+
+{% block page_title %}
+  {% if is_edit %}{{ template.name }}{% else %}{% trans "New Template" %}{% endif %}
+{% endblock %}
+
+{% block page_actions %}
+  {% if is_edit %}
+  <button form="tpl-form" type="submit"
+          class="inline-flex items-center gap-1.5 px-3 py-[7px] text-[13px] font-medium rounded-md
+                 bg-indigo-500 text-white hover:bg-indigo-600 transition-colors">
+    {% trans "Save" %}
+  </button>
+  {% endif %}
+  <a href="{% url 'templates_mgr:list' %}"
+     class="inline-flex items-center gap-1.5 px-3 py-[7px] text-[13px] font-medium rounded-md
+            bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors">
+    {% trans "Cancel" %}
+  </a>
+{% endblock %}
+
+{% block content %}
+{% if form.non_field_errors %}
+<div class="bg-red-50 border border-red-200 rounded-lg px-4 py-3 mb-4 text-sm text-red-700">
+  {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+</div>
+{% endif %}
+
+<form method="post" id="tpl-form">
+  {% csrf_token %}
+
+  {# Meta fields row #}
+  <div class="grid grid-cols-1 {% if is_edit %}sm:grid-cols-3{% else %}sm:grid-cols-2{% endif %} gap-4 mb-5">
+    <div>
+      <label for="id_name" class="block text-xs font-medium text-gray-700 mb-1">{% trans "Name" %}</label>
+      <input type="text" name="name" id="id_name" value="{{ form.name.value|default:'' }}"
+             class="w-full h-8 px-2.5 text-sm border border-gray-300 rounded-md focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none">
+      {% if form.name.errors %}<div class="text-xs text-red-600 mt-1">{% for e in form.name.errors %}{{ e }}{% endfor %}</div>{% endif %}
+    </div>
+    <div>
+      <label for="id_slug" class="block text-xs font-medium text-gray-700 mb-1">{% trans "Slug" %}</label>
+      <input type="text" name="slug" id="id_slug" value="{{ form.slug.value|default:'' }}"
+             class="w-full h-8 px-2.5 text-sm font-mono border border-gray-300 rounded-md focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none">
+      {% if form.slug.errors %}<div class="text-xs text-red-600 mt-1">{% for e in form.slug.errors %}{{ e }}{% endfor %}</div>{% endif %}
+    </div>
+    {% if is_edit %}
+    <div>
+      <label for="id_subject_default" class="block text-xs font-medium text-gray-700 mb-1">{% trans "Subject" %}</label>
+      <input type="text" name="subject_default" id="id_subject_default" value="{{ form.subject_default.value|default:'' }}"
+             class="w-full h-8 px-2.5 text-sm border border-gray-300 rounded-md focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none">
+    </div>
+    {% else %}
+    <div class="sm:col-span-2">
+      <label for="id_subject_default" class="block text-xs font-medium text-gray-700 mb-1">{% trans "Default subject" %}</label>
+      <input type="text" name="subject_default" id="id_subject_default" value="{{ form.subject_default.value|default:'' }}"
+             placeholder="e.g. Welcome to &#123;&#123; app_name &#125;&#125;, &#123;&#123; subscriber_name &#125;&#125;!"
+             class="w-full h-8 px-2.5 text-sm border border-gray-300 rounded-md focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none">
+    </div>
+    {% endif %}
+  </div>
+
+  {% if is_edit %}
+  {# ── Split-pane editor (edit mode only) ──────────────── #}
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-0 bg-white border border-gray-200 rounded-lg overflow-hidden min-h-[560px]">
+    {# Left: code editor #}
+    <div class="flex flex-col border-r border-gray-200">
+      <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 border-b border-gray-200 text-xs text-gray-600">
+        <span class="font-semibold text-gray-800">{% trans "Editor" %}</span>
+        <span class="font-mono text-gray-500 ml-2">django-html</span>
+      </div>
+      <textarea name="html_body" id="id_html_body"
+                class="flex-1 p-4 font-mono text-[12.5px] leading-relaxed bg-slate-900 text-slate-200 resize-none outline-none border-0"
+                spellcheck="false">{{ form.html_body.value|default:'' }}</textarea>
+      {% if form.html_body.errors %}<div class="text-xs text-red-600 px-3 py-1">{% for e in form.html_body.errors %}{{ e }}{% endfor %}</div>{% endif %}
+
+      {# Variables reference #}
+      {% if template_vars %}
+      <details class="border-t border-gray-200 bg-white">
+        <summary class="px-3 py-2 text-xs font-medium text-gray-700 cursor-pointer select-none flex items-center gap-1">
+          {% include "components/icon.html" with name="chevDown" size=12 %}
+          {% trans "Available variables" %}
+        </summary>
+        <ul class="px-3 pb-3 grid grid-cols-2 xl:grid-cols-3 gap-x-4 gap-y-1 text-xs font-mono text-gray-700">
+          {% for v in template_vars %}
+          <li>{% templatetag openvariable %} <b class="text-indigo-600">{{ v }}</b> {% templatetag closevariable %}</li>
+          {% endfor %}
+        </ul>
+      </details>
+      {% endif %}
+    </div>
+
+    {# Right: live preview #}
+    <div class="flex flex-col">
+      <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 border-b border-gray-200 text-xs text-gray-600">
+        <span class="font-semibold text-gray-800">{% trans "Preview" %}</span>
+        <span class="text-gray-500">{% trans "rendered with sample data" %}</span>
+        <button type="button"
+                hx-get="{% url 'templates_mgr:preview' slug=template.slug %}"
+                hx-target="#preview-pane"
+                hx-swap="innerHTML"
+                class="ml-auto text-xs text-indigo-600 hover:text-indigo-800 font-medium">
+          {% trans "Refresh" %}
+        </button>
+      </div>
+      <div id="preview-pane" class="flex-1 p-5 bg-gray-50 overflow-auto">
+        {% include "templates_mgr/_preview.html" %}
+      </div>
+    </div>
+  </div>
+
+  {# Text body (collapsible) #}
+  <details class="mt-4 bg-white border border-gray-200 rounded-lg">
+    <summary class="px-4 py-3 text-sm font-medium text-gray-700 cursor-pointer">{% trans "Plain text body (optional)" %}</summary>
+    <div class="px-4 pb-4">
+      <textarea name="text_body" id="id_text_body" rows="6"
+                class="w-full p-3 font-mono text-xs border border-gray-300 rounded-md focus:border-indigo-400 outline-none resize-vertical">{{ form.text_body.value|default:'' }}</textarea>
+    </div>
+  </details>
+
+  {% else %}
+  {# ── Simple form (create mode) ──────────────────────── #}
+  <div class="bg-white border border-gray-200 rounded-lg p-6 space-y-5 max-w-[640px]">
+    <div>
+      <label for="id_html_body" class="block text-xs font-medium text-gray-700 mb-1.5">{% trans "HTML body" %}</label>
+      <textarea name="html_body" id="id_html_body" rows="12"
+                class="w-full p-3 font-mono text-xs border border-gray-300 rounded-md focus:border-indigo-400 outline-none resize-vertical leading-relaxed"
+                placeholder="&lt;h1&gt;Hello &#123;&#123; subscriber_name &#125;&#125;&lt;/h1&gt;&#10;&lt;p&gt;Your content here.&lt;/p&gt;">{{ form.html_body.value|default:'' }}</textarea>
+      {% if form.html_body.errors %}<div class="text-xs text-red-600 mt-1">{% for e in form.html_body.errors %}{{ e }}{% endfor %}</div>{% endif %}
+    </div>
+    <div>
+      <label for="id_text_body" class="block text-xs font-medium text-gray-700 mb-1.5">
+        {% trans "Plain text body" %} <span class="text-gray-400 font-normal">({% trans "optional" %})</span>
+      </label>
+      <textarea name="text_body" id="id_text_body" rows="4"
+                class="w-full p-3 font-mono text-xs border border-gray-300 rounded-md focus:border-indigo-400 outline-none resize-vertical">{{ form.text_body.value|default:'' }}</textarea>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if not is_edit %}
+  <div class="flex items-center gap-3 mt-5">
+    <button type="submit"
+            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-md
+                   bg-indigo-500 text-white hover:bg-indigo-600 transition-colors">
+      {% trans "Create Template" %}
+    </button>
+  </div>
+  {% endif %}
+</form>
+{% endblock %}

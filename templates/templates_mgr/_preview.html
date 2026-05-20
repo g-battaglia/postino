@@ -1,0 +1,17 @@
+{% load i18n %}
+<div class="bg-white max-w-[480px] mx-auto rounded-lg border border-gray-200 overflow-hidden">
+  {% if preview.subject %}
+  <div class="px-4 py-3 border-b border-gray-200 text-[17px] font-semibold tracking-tight">
+    {{ preview.subject }}
+  </div>
+  {% endif %}
+  <div class="px-4 py-4 text-sm text-gray-700 leading-relaxed">
+    {% if preview.html %}
+      {{ preview.html|safe }}
+    {% elif preview.error %}
+      <div class="text-red-600 font-mono text-xs">{{ preview.error }}</div>
+    {% else %}
+      <span class="text-gray-400">{% trans "No preview available." %}</span>
+    {% endif %}
+  </div>
+</div>

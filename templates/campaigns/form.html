@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}
+  {% if is_edit %}
+    {% trans "Edit Campaign" %}
+  {% else %}
+    {% trans "New Campaign" %}
+  {% endif %}
+{% endblock %}
+
+{% block breadcrumb %}<a href="{% url 'campaigns:list' %}" class="text-gray-500 hover:text-gray-700">{% trans "Campaigns" %}</a> {% include "components/icon.html" with name="chevRight" size=12 %} {% if is_edit %}{% trans "Edit" %}{% else %}{% trans "New" %}{% endif %}{% endblock %}
+
+{% block nav_campaigns_class %}bg-indigo-500/20 text-white{% endblock %}
+
+{% block page_title %}
+  {% if is_edit %}
+    {% trans "Edit Campaign" %}
+  {% else %}
+    {% trans "New Campaign" %}
+  {% endif %}
+{% endblock %}
+
+{% block page_actions %}
+  <a href="{% url 'campaigns:list' %}"
+     class="inline-flex items-center gap-1.5 px-3 py-[7px] text-[13px] font-medium rounded-md
+            bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors">
+    {% trans "Cancel" %}
+  </a>
+{% endblock %}
+
+{% block content %}
+<form method="post">
+  {% csrf_token %}
+
+  {# Form errors #}
+  {% if form.non_field_errors %}
+  <div class="bg-red-50 border border-red-200 rounded-[8px] px-4 py-3 mb-4 text-[13px] text-red-700">
+    {% for error in form.non_field_errors %}
+    <p>{{ error }}</p>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="bg-white border border-gray-200 rounded-[10px] p-6 space-y-5">
+    {# Name #}
+    <div>
+      <label for="id_name" class="block text-[13px] font-medium text-gray-700 mb-1.5">
+        {% trans "Campaign name" %}
+      </label>
+      {{ form.name }}
+      {% if form.name.errors %}
+      <div class="text-[12px] text-red-600 mt-1">
+        {% for error in form.name.errors %}{{ error }}{% endfor %}
+      </div>
+      {% endif %}
+      <p class="text-[11.5px] text-gray-400 mt-1">{% trans "Internal name — not shown to subscribers." %}</p>
+    </div>
+
+    {# Email Type #}
+    <div>
+      <label for="id_email_type" class="block text-[13px] font-medium text-gray-700 mb-1.5">
+        {% trans "Email type" %}
+      </label>
+      {{ form.email_type }}
+      {% if form.email_type.errors %}
+      <div class="text-[12px] text-red-600 mt-1">
+        {% for error in form.email_type.errors %}{{ error }}{% endfor %}
+      </div>
+      {% endif %}
+      <p class="text-[11.5px] text-gray-400 mt-1">{% trans "Determines consent scope — only subscribers who opted in to this type will receive the campaign." %}</p>
+    </div>
+
+    {# Template #}
+    <div>
+      <label for="id_template" class="block text-[13px] font-medium text-gray-700 mb-1.5">
+        {% trans "Email template" %}
+      </label>
+      {{ form.template }}
+      {% if form.template.errors %}
+      <div class="text-[12px] text-red-600 mt-1">
+        {% for error in form.template.errors %}{{ error }}{% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    {# Subject Line #}
+    <div>
+      <label for="id_subject_line" class="block text-[13px] font-medium text-gray-700 mb-1.5">
+        {% trans "Subject line" %}
+      </label>
+      {{ form.subject_line }}
+      {% if form.subject_line.errors %}
+      <div class="text-[12px] text-red-600 mt-1">
+        {% for error in form.subject_line.errors %}{{ error }}{% endfor %}
+      </div>
+      {% endif %}
+      <p class="text-[11.5px] text-gray-400 mt-1">{% trans "Overrides the template default subject." %}</p>
+    </div>
+
+    {# Audience Filter — visual fields #}
+    <div class="border-t border-gray-100 pt-5">
+      <h3 class="text-[13px] font-semibold text-gray-900 mb-3">{% trans "Audience" %}</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label for="id_audience_tags" class="block text-[12px] font-medium text-gray-700 mb-1.5">
+            {% trans "Tags" %}
+            <span class="text-gray-400 font-normal">· {% trans "any of" %}</span>
+          </label>
+          {{ form.audience_tags }}
+          {% if form.audience_tags.errors %}
+          <div class="text-[12px] text-red-600 mt-1">{% for e in form.audience_tags.errors %}{{ e }}{% endfor %}</div>
+          {% endif %}
+          <p class="text-[11px] text-gray-400 mt-1">{{ form.audience_tags.help_text }}</p>
+        </div>
+        <div>
+          <label for="id_audience_status" class="block text-[12px] font-medium text-gray-700 mb-1.5">
+            {% trans "Status" %}
+          </label>
+          {{ form.audience_status }}
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4 mt-3">
+        <div>
+          <label for="id_health_min" class="block text-[12px] font-medium text-gray-700 mb-1.5">
+            {% trans "Health score min" %}
+          </label>
+          {{ form.health_min }}
+        </div>
+        <div>
+          <label for="id_health_max" class="block text-[12px] font-medium text-gray-700 mb-1.5">
+            {% trans "Health score max" %}
+          </label>
+          {{ form.health_max }}
+        </div>
+      </div>
+    </div>
+
+    {# Scheduled At #}
+    <div>
+      <label for="id_scheduled_at" class="block text-[13px] font-medium text-gray-700 mb-1.5">
+        {% trans "Scheduled at" %}
+        <span class="text-gray-400 font-normal">{% trans "(optional)" %}</span>
+      </label>
+      {{ form.scheduled_at }}
+      {% if form.scheduled_at.errors %}
+      <div class="text-[12px] text-red-600 mt-1">
+        {% for error in form.scheduled_at.errors %}{{ error }}{% endfor %}
+      </div>
+      {% endif %}
+      <p class="text-[11.5px] text-gray-400 mt-1">
+        {% trans "Leave blank to save as draft. Set a date/time to schedule." %}
+      </p>
+    </div>
+  </div>
+
+  {# Actions #}
+  <div class="flex items-center gap-3 mt-5">
+    <button type="submit"
+            class="inline-flex items-center gap-1.5 px-4 py-2 text-[13px] font-medium rounded-md
+                   bg-indigo-500 text-white hover:bg-indigo-600 transition-colors">
+      {% if is_edit %}
+        {% trans "Save Changes" %}
+      {% else %}
+        {% trans "Create Campaign" %}
+      {% endif %}
+    </button>
+    <a href="{% url 'campaigns:list' %}"
+       class="text-[13px] text-gray-500 hover:text-gray-700">
+      {% trans "Cancel" %}
+    </a>
+  </div>
+</form>
+
+{# CLI hint #}
+<div class="mt-8 bg-gray-50 border border-gray-200 rounded-[8px] px-4 py-3">
+  <div class="text-[12px] text-gray-500 font-medium mb-1">{% trans "CLI alternative" %}</div>
+  <code class="text-[12px] text-gray-700 font-mono">
+    {% if is_edit %}
+      postino campaigns update {{ campaign.pk }} --name "..."
+    {% else %}
+      postino campaigns create --name "..." --email-type newsletter --template slug --subject "..."
+    {% endif %}
+  </code>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* Style form inputs to match the design system */
+  #id_name, #id_subject_line, #id_audience_tags,
+  #id_health_min, #id_health_max, #id_scheduled_at {
+    width: 100%;
+    height: auto;
+    padding: 6px 10px;
+    font-size: 13px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    background: white;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  #id_name:focus, #id_subject_line:focus, #id_audience_tags:focus,
+  #id_health_min:focus, #id_health_max:focus, #id_scheduled_at:focus {
+    border-color: #818cf8;
+    box-shadow: 0 0 0 3px rgba(129,140,248,0.15);
+  }
+  #id_email_type, #id_template, #id_audience_status {
+    width: 100%;
+    height: 32px;
+    padding: 0 10px;
+    font-size: 13px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    background: white;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  #id_email_type:focus, #id_template:focus, #id_audience_status:focus {
+    border-color: #818cf8;
+    box-shadow: 0 0 0 3px rgba(129,140,248,0.15);
+  }
+  #id_scheduled_at {
+    width: auto;
+    min-width: 220px;
+  }
+</style>
+{% endblock %}

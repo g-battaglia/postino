@@ -1,0 +1,167 @@
+{% load i18n %}
+<div id="subscriber-table" class="bg-white border border-gray-200 rounded-[10px] overflow-hidden">
+  {% if subscribers %}
+  <form method="post" class="contents">
+    {% csrf_token %}
+    <div class="flex flex-wrap items-center gap-2 px-4 py-3 border-b border-gray-200 bg-gray-50">
+      <span class="text-[12px] font-medium uppercase tracking-[0.05em] text-gray-500">
+        {% trans "Bulk actions" %}
+      </span>
+      <input type="text" name="tag" placeholder="{% trans 'Tag name' %}"
+             class="h-8 w-36 px-2.5 text-[13px] border border-gray-200 rounded-md bg-white
+                    focus:border-indigo-300 focus:ring-1 focus:ring-indigo-200 outline-none">
+      <button type="submit" formaction="{% url 'subscribers:bulk_tag' %}"
+              class="h-8 px-3 text-[12.5px] font-medium rounded-md bg-white border border-gray-200
+                     text-gray-700 hover:bg-gray-100">
+        {% trans "Apply tag" %}
+      </button>
+      <input type="text" name="reason" value="bulk_suppress" aria-label="{% trans 'Suppress reason' %}"
+             class="h-8 w-36 px-2.5 text-[13px] border border-gray-200 rounded-md bg-white
+                    focus:border-indigo-300 focus:ring-1 focus:ring-indigo-200 outline-none">
+      <button type="submit" formaction="{% url 'subscribers:bulk_suppress' %}"
+              class="h-8 px-3 text-[12.5px] font-medium rounded-md bg-rose-50 border border-rose-100
+                     text-rose-700 hover:bg-rose-100">
+        {% trans "Suppress" %}
+      </button>
+      <button type="submit" formaction="{% url 'subscribers:bulk_export' %}"
+              class="h-8 px-3 text-[12.5px] font-medium rounded-md bg-white border border-gray-200
+                     text-gray-700 hover:bg-gray-100">
+        {% trans "Export CSV" %}
+      </button>
+    </div>
+  <table class="w-full border-collapse text-[13px]">
+    <thead>
+      <tr>
+        <th class="w-10 px-4 py-2.5 bg-gray-50 border-b border-gray-200"></th>
+        <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                   px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+          {% trans "Email / Name" %}
+        </th>
+        <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                   px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+          {% trans "Status" %}
+        </th>
+        <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                   px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+          {% trans "Tags" %}
+        </th>
+        <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                   px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+          {% trans "Health" %}
+        </th>
+        <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                   px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+          {% trans "Source" %}
+        </th>
+        <th class="text-left text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                   px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+          {% trans "Created" %}
+        </th>
+        <th class="text-right text-[11.5px] font-medium uppercase tracking-[0.05em] text-gray-500
+                   px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for sub in subscribers %}
+      <tr class="hover:bg-gray-50 cursor-pointer"
+          onclick="window.location='{% url "subscribers:detail" subscriber_id=sub.id %}'">
+        <td class="px-4 py-3 border-b border-gray-100" onclick="event.stopPropagation()">
+          <input type="checkbox" name="selected" value="{{ sub.id }}"
+                 aria-label="{% trans 'Select subscriber' %}"
+                 class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+        </td>
+        <td class="px-4 py-3 border-b border-gray-100">
+          <div class="flex flex-col gap-0.5">
+            <span class="font-medium text-gray-900">{{ sub.email }}</span>
+            {% if sub.name %}
+            <span class="text-[11.5px] text-gray-500">{{ sub.name }}</span>
+            {% endif %}
+          </div>
+        </td>
+        <td class="px-4 py-3 border-b border-gray-100">
+          {% include "components/status_badge.html" with status=sub.status %}
+        </td>
+        <td class="px-4 py-3 border-b border-gray-100">
+          <div class="flex flex-wrap gap-1">
+          {% for tag in sub.tags.all %}
+            {% include "components/tag.html" with name=tag.display_name color="indigo" %}
+          {% endfor %}
+          </div>
+        </td>
+        <td class="px-4 py-3 border-b border-gray-100">
+          {% include "components/health_bar.html" with score=sub.health_score %}
+        </td>
+        <td class="px-4 py-3 border-b border-gray-100">
+          <span class="text-[12px] text-gray-500 capitalize">{{ sub.source }}</span>
+        </td>
+        <td class="px-4 py-3 border-b border-gray-100 text-[12px] text-gray-500 tabular-nums">
+          {{ sub.created_at|date:"M j, Y" }}
+        </td>
+        <td class="px-4 py-3 border-b border-gray-100 text-right">
+          <a href="{% url 'subscribers:detail' subscriber_id=sub.id %}"
+             class="text-gray-400 hover:text-gray-700 inline-flex items-center"
+             onclick="event.stopPropagation()">
+            {% include "components/icon.html" with name="chevRight" size=14 %}
+          </a>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  {# Pagination #}
+  {% if page_obj and page_obj.paginator.num_pages > 1 %}
+  <div class="flex items-center gap-1 px-4 py-3 border-t border-gray-200 text-[13px] bg-white rounded-b-[10px]">
+    <span class="text-gray-500">
+      {% blocktrans with from=page_obj.start_index|default:"0" to=page_obj.end_index|default:"0" total=page_obj.paginator.count %}
+        Showing {{ from }}–{{ to }} of {{ total }}
+      {% endblocktrans %}
+    </span>
+    <span class="flex-1"></span>
+
+    {% if page_obj.has_previous %}
+    <a href="?{% if filter_qs %}{{ filter_qs }}&{% endif %}page={{ page_obj.previous_page_number }}"
+       hx-get="?{% if filter_qs %}{{ filter_qs }}&{% endif %}page={{ page_obj.previous_page_number }}"
+       hx-target="#subscriber-table"
+       hx-swap="outerHTML"
+       class="min-w-[28px] h-7 px-2 bg-white border border-gray-200 rounded-[5px]
+              text-[12.5px] text-gray-700 cursor-pointer tabular-nums
+              hover:bg-gray-50 inline-flex items-center justify-center">
+      {% include "components/icon.html" with name="chevLeft" size=12 %}
+    </a>
+    {% else %}
+    <span class="min-w-[28px] h-7 px-2 bg-white border border-gray-200 rounded-[5px]
+                 text-[12.5px] text-gray-400 cursor-not-allowed opacity-40
+                 inline-flex items-center justify-center">
+      {% include "components/icon.html" with name="chevLeft" size=12 %}
+    </span>
+    {% endif %}
+
+    {% if page_obj.has_next %}
+    <a href="?{% if filter_qs %}{{ filter_qs }}&{% endif %}page={{ page_obj.next_page_number }}"
+       hx-get="?{% if filter_qs %}{{ filter_qs }}&{% endif %}page={{ page_obj.next_page_number }}"
+       hx-target="#subscriber-table"
+       hx-swap="outerHTML"
+       class="min-w-[28px] h-7 px-2 bg-white border border-gray-200 rounded-[5px]
+              text-[12.5px] text-gray-700 cursor-pointer tabular-nums
+              hover:bg-gray-50 inline-flex items-center justify-center">
+      {% include "components/icon.html" with name="chevRight" size=12 %}
+    </a>
+    {% else %}
+    <span class="min-w-[28px] h-7 px-2 bg-white border border-gray-200 rounded-[5px]
+                 text-[12.5px] text-gray-400 cursor-not-allowed opacity-40
+                 inline-flex items-center justify-center">
+      {% include "components/icon.html" with name="chevRight" size=12 %}
+    </span>
+    {% endif %}
+  </div>
+  {% endif %}
+  </form>
+
+  {% else %}
+  <div class="py-12">
+    {% include "components/empty_state.html" with icon="users" title=_("No subscribers found") message=_("Import subscribers or adjust your filters.") action_url="/subscribers/import/" action_label=_("Import CSV") %}
+  </div>
+  {% endif %}
+</div>

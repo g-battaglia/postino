@@ -1,0 +1,88 @@
+{% spaceless %}
+{% load i18n %}
+
+{% if status == "active" %}
+<span class="inline-flex items-center gap-1 px-2 py-[2px] text-[11.5px] font-medium rounded-full bg-emerald-50 text-emerald-700 border border-transparent leading-snug whitespace-nowrap">
+  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+  {% trans "Active" %}
+</span>
+
+{% elif status == "pending" %}
+<span class="inline-flex items-center gap-1 px-2 py-[2px] text-[11.5px] font-medium rounded-full bg-amber-50 text-amber-700 border border-transparent leading-snug whitespace-nowrap">
+  <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+  {% trans "Pending" %}
+</span>
+
+{% elif status == "unsubscribed" %}
+<span class="inline-flex items-center gap-1 px-2 py-[2px] text-[11.5px] font-medium rounded-full bg-gray-100 text-gray-600 border border-transparent leading-snug whitespace-nowrap">
+  <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+  {% trans "Unsubscribed" %}
+</span>
+
+{% elif status == "bounced" %}
+<span class="inline-flex items-center gap-1 px-2 py-[2px] text-[11.5px] font-medium rounded-full bg-red-50 text-red-700 border border-transparent leading-snug whitespace-nowrap">
+  <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+  {% trans "Bounced" %}
+</span>
+
+{% elif status == "complained" %}
+<span class="inline-flex items-center gap-1 px-2 py-[2px] text-[11.5px] font-medium rounded-full bg-red-50 text-red-700 border border-transparent leading-snug whitespace-nowrap">
+  <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+  {% trans "Complained" %}
+</span>
+
+{% elif status == "sent" %}
+<span class="inline-flex items-center gap-1 px-2 py-[2px] text-[11.5px] font-medium rounded-full bg-emerald-50 text-emerald-700 border border-transparent leading-snug whitespace-nowrap">
+  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+  {% trans "Sent" %}
+</span>
+
+{% elif status == "scheduled" %}
+<span class="inline-flex items-center gap-1 px-2 py-[2px] text-[11.5px] font-medium rounded-full bg-indigo-50 text-indigo-700 border border-transparent leading-snug whitespace-nowrap">
+  <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+  {% trans "Scheduled" %}
+</span>
+
+{% elif status == "draft" %}
+<span class="inline-flex items-center gap-1 px-2 py-[2px] text-[11.5px] font-medium rounded-full bg-gray-100 text-gray-600 border border-transparent leading-snug whitespace-nowrap">
+  <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+  {% trans "Draft" %}
+</span>
+
+{% elif status == "cancelled" %}
+<span class="inline-flex items-center gap-1 px-2 py-[2px] text-[11.5px] font-medium rounded-full bg-gray-100 text-gray-600 border border-transparent leading-snug whitespace-nowrap">
+  <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+  {% trans "Cancelled" %}
+</span>
+
+{% elif status == "paused" %}
+<span class="inline-flex items-center gap-1 px-2 py-[2px] text-[11.5px] font-medium rounded-full bg-amber-50 text-amber-700 border border-transparent leading-snug whitespace-nowrap">
+  <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+  {% trans "Paused" %}
+</span>
+
+{% elif status == "sending" %}
+<span class="inline-flex items-center gap-1 px-2 py-[2px] text-[11.5px] font-medium rounded-full bg-indigo-50 text-indigo-700 border border-transparent leading-snug whitespace-nowrap">
+  <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+  {% trans "Sending" %}
+</span>
+
+{% elif status == "deleted" %}
+<span class="inline-flex items-center gap-1 px-2 py-[2px] text-[11.5px] font-medium rounded-full bg-gray-100 text-gray-600 border border-transparent leading-snug whitespace-nowrap">
+  <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+  {% trans "Deleted" %}
+</span>
+
+{% elif status == "delivered" %}
+<span class="inline-flex items-center gap-1 px-2 py-[2px] text-[11.5px] font-medium rounded-full bg-emerald-50 text-emerald-700 border border-transparent leading-snug whitespace-nowrap">
+  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+  {% trans "Delivered" %}
+</span>
+
+{% else %}
+<span class="inline-flex items-center gap-1 px-2 py-[2px] text-[11.5px] font-medium rounded-full bg-gray-100 text-gray-600 border border-transparent leading-snug whitespace-nowrap">
+  <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+  {{ status|title }}
+</span>
+{% endif %}
+{% endspaceless %}

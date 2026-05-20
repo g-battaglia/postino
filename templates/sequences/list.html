@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Sequences" %}{% endblock %}
+{% block breadcrumb %}{% trans "Sequences" %}{% endblock %}
+{% block nav_sequences_class %}bg-indigo-500/20 text-white{% endblock %}
+
+{% block page_title %}{% trans "Sequences" %}{% endblock %}
+{% block page_subtitle %}
+  <div class="text-[13px] text-gray-500 mt-1">
+    {% blocktrans count counter=total_count %}
+      {{ counter }} sequence total
+    {% plural %}
+      {{ counter }} sequences total
+    {% endblocktrans %}
+    — {{ active_count }} {% trans "active" %}
+  </div>
+{% endblock %}
+
+{% block page_actions %}
+  <a href="{% url 'sequences:create' %}"
+     class="inline-flex items-center gap-1.5 px-3 py-[7px] text-[13px] font-medium rounded-md
+            bg-indigo-500 text-white hover:bg-indigo-600 transition-colors">
+    {% include "components/icon.html" with name="plus" size=14 %}
+    {% trans "New Sequence" %}
+  </a>
+{% endblock %}
+
+{% block help_widget %}
+<button onclick="document.getElementById('help-dialog').showModal()"
+        class="fixed bottom-6 right-6 z-50 w-10 h-10 rounded-full bg-indigo-500 hover:bg-indigo-600 text-white shadow-lg flex items-center justify-center text-lg font-semibold transition-colors cursor-pointer"
+        aria-label="{% trans 'Help' %}">?</button>
+<dialog id="help-dialog" class="fixed inset-0 m-auto max-w-md w-[calc(100%-2rem)] rounded-xl border border-gray-200 shadow-2xl p-0 backdrop:bg-black/30">
+  <div class="px-6 pt-5 pb-4">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center flex-shrink-0">
+        {% include "components/icon.html" with name="info" size=16 %}
+      </div>
+      <h3 class="text-base font-semibold text-gray-900 m-0 flex-1">{% trans "Sequences" %}</h3>
+      <button onclick="document.getElementById('help-dialog').close()" class="text-gray-400 hover:text-gray-600">
+        {% include "components/icon.html" with name="x" size=18 %}
+      </button>
+    </div>
+    <div class="text-sm text-gray-600 leading-relaxed space-y-2 pl-11">
+      <p>{% trans "Sequences are automated multi-step email flows triggered by events." %}</p><p>{% trans "<strong>Triggers</strong> — start when a subscriber is created, a tag is added, or manually enrolled." %}</p><p>{% trans "Each step has a delay and optional conditions. Subscribers progress automatically." %}</p>
+    </div>
+  </div>
+  <div class="px-6 py-3 bg-gray-50 border-t border-gray-100 rounded-b-xl">
+    <button onclick="document.getElementById('help-dialog').close()" class="text-sm font-medium text-gray-700 hover:text-gray-900">{% trans "Got it" %}</button>
+  </div>
+</dialog>
+{% endblock %}
+
+{% block content %}
+{% if sequences %}
+<div class="bg-white border border-gray-200 rounded-[10px] overflow-hidden">
+  <table class="w-full text-[13px]">
+    <thead>
+      <tr class="border-b border-gray-100 text-gray-500 text-left">
+        <th class="px-4 py-2.5 font-medium">{% trans "Name" %}</th>
+        <th class="px-4 py-2.5 font-medium">{% trans "Trigger" %}</th>
+        <th class="px-4 py-2.5 font-medium">{% trans "Steps" %}</th>
+        <th class="px-4 py-2.5 font-medium">{% trans "Status" %}</th>
+        <th class="px-4 py-2.5 font-medium">{% trans "Created" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for seq in sequences %}
+      <tr class="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+        <td class="px-4 py-3">
+          <a href="{% url 'sequences:detail' sequence_id=seq.pk %}"
+             class="text-gray-900 font-medium hover:text-indigo-600 transition-colors">
+            {{ seq.name }}
+          </a>
+          <div class="text-[12px] text-gray-400 mt-0.5">{{ seq.slug }}</div>
+        </td>
+        <td class="px-4 py-3">
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium
+                       bg-gray-100 text-gray-600">
+            {{ seq.get_trigger_type_display }}
+          </span>
+        </td>
+        <td class="px-4 py-3 text-gray-600">{{ seq.steps.count }}</td>
+        <td class="px-4 py-3">
+          {% if seq.is_active %}
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium
+                       bg-emerald-50 text-emerald-700 border border-emerald-200">
+            {% trans "Active" %}
+          </span>
+          {% else %}
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium
+                       bg-gray-100 text-gray-500 border border-gray-200">
+            {% trans "Paused" %}
+          </span>
+          {% endif %}
+        </td>
+        <td class="px-4 py-3 text-gray-400">{{ seq.created_at|date:"M j, Y" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if page_obj.has_other_pages %}
+{% include "components/pagination.html" with page_obj=page_obj %}
+{% endif %}
+
+{% else %}
+{% include "components/empty_state.html" with icon="mail" message=_("No sequences yet. Create your first automated email flow.") %}
+{% endif %}
+{% endblock %}

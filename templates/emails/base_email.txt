@@ -1,0 +1,14 @@
+{% load i18n %}{% block subject %}{% endblock %}
+======================================================================
+
+{% if subscriber_name %}{% blocktrans with name=subscriber_name %}Hi {{ name }},{% endblocktrans %}
+
+{% endif %}{% block content %}{% endblock %}
+
+----------------------------------------------------------------------
+{% block footer_extra %}{% endblock %}
+{% blocktrans with name=app_name|default:"Postino" %}You received this email because you are subscribed to {{ name }}.{% endblocktrans %}
+
+{% trans "Unsubscribe" %}: {{ unsubscribe_url }}
+{% if physical_address %}{{ physical_address }}
+{% endif %}

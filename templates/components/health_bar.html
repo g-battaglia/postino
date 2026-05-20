@@ -1,0 +1,10 @@
+{% spaceless %}
+{% load i18n %}
+
+<div class="flex items-center gap-2 tabular-nums">
+  <div class="w-[60px] h-1.5 rounded-full bg-gray-100 overflow-hidden">
+    <div class="h-full rounded-full" style="width: {{ score }}%; background: {% if score >= 70 %}#10b981{% elif score >= 40 %}#f59e0b{% else %}#ef4444{% endif %};"></div>
+  </div>
+  <span class="text-[12px] font-medium w-7 text-right">{{ score }}</span>
+</div>
+{% endspaceless %}

@@ -1,0 +1,292 @@
+{% load i18n static postino_utils %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:'en' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% trans "Dashboard" %}{% endblock %} · {{ settings.POSTINO_APP_NAME|default:"Postino" }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+          },
+          colors: {
+            sidebar: { DEFAULT: '#111827', hover: '#1f2937' },
+          },
+        },
+      },
+    };
+  </script>
+  <style type="text/tailwindcss">
+    @layer base {
+      html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+      body { font-size: 14px; line-height: 1.5; }
+      /* Custom checkbox for Tailwind */
+      input[type="checkbox"].postino-check {
+        @apply appearance-none w-[15px] h-[15px] border border-gray-300 rounded-[3px]
+               bg-white cursor-pointer relative align-middle;
+      }
+      input[type="checkbox"].postino-check:checked {
+        @apply bg-indigo-500 border-indigo-500;
+      }
+      input[type="checkbox"].postino-check:checked::after {
+        content: '';
+        @apply absolute left-[4px] top-[1px] w-[4px] h-[8px]
+               border-solid border-white border-r-2 border-b-2 rotate-45;
+      }
+    }
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body class="bg-[#fafafa] text-gray-900">
+  {# Skip link for accessibility #}
+  <a href="#main-content"
+     class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2
+            focus:bg-indigo-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-md focus:z-[999]">
+    {% trans "Skip to content" %}
+  </a>
+
+  {# Mobile sidebar backdrop — closes sidebar on tap #}
+  <div id="sidebar-backdrop"
+       class="fixed inset-0 bg-black/40 z-40 hidden lg:hidden"
+       onclick="document.getElementById('sidebar').classList.add('-translate-x-full');this.classList.add('hidden')"></div>
+
+  <div class="lg:grid lg:grid-cols-[240px_1fr] min-h-screen">
+
+    {# ── Sidebar ───────────────────────────────────────────────── #}
+    <aside id="sidebar"
+           class="fixed inset-y-0 left-0 w-[240px] -translate-x-full lg:translate-x-0
+                  lg:static lg:inset-auto flex flex-col
+                  bg-[#111827] text-gray-200 z-50 transition-transform duration-200"
+           role="navigation" aria-label="{% trans 'Main navigation' %}">
+      {# Brand #}
+      <div class="flex items-center gap-2.5 px-5 pt-5 pb-[18px]
+                  font-bold text-[15px] tracking-tight
+                  border-b border-white/[0.06]">
+        <div class="w-7 h-7 bg-indigo-500 rounded-[7px] flex items-center justify-center
+                    text-white font-bold text-sm font-mono">P</div>
+        {{ settings.POSTINO_APP_NAME|default:"Postino" }}
+        <span class="ml-auto text-[11px] text-gray-400 font-mono hidden lg:inline">v{{ settings.POSTINO_VERSION|default:"0.1" }}</span>
+        <button class="ml-auto lg:hidden text-gray-400 hover:text-white p-1"
+                aria-label="{% trans 'Close' %}"
+                onclick="document.getElementById('sidebar').classList.add('-translate-x-full');document.getElementById('sidebar-backdrop').classList.add('hidden')">
+          {% include "components/icon.html" with name="x" size=16 %}
+        </button>
+      </div>
+
+      {# Navigation groups #}
+      <nav class="flex-1 overflow-y-auto pt-[18px] px-3 pb-3">
+        {% block sidebar_nav %}
+        {# Main section #}
+        <div class="px-2.5 pb-2 text-[11px] uppercase tracking-[0.06em]
+                    text-gray-400 font-semibold">
+          {% trans "Main" %}
+        </div>
+        <div class="flex flex-col gap-px">
+          {% safe_url "core:dashboard" as dashboard_url %}
+          <a href="{{ dashboard_url }}"
+             class="flex items-center gap-2.5 px-2.5 py-2 text-[13.5px] rounded-md
+                    text-gray-200 hover:bg-white/5 transition-colors
+                    {% block nav_dashboard_class %}{% if nav_active == 'dashboard' %}bg-indigo-500/20 text-white{% endif %}{% endblock %}">
+            {% include "components/icon.html" with name="home" size=16 class_extra="text-gray-400" %}
+            {% trans "Dashboard" %}
+          </a>
+
+          {% safe_url "subscribers:list" as subscribers_url %}
+          <a href="{{ subscribers_url }}"
+             class="flex items-center gap-2.5 px-2.5 py-2 text-[13.5px] rounded-md
+                    text-gray-200 hover:bg-white/5 transition-colors
+                    {% block nav_subscribers_class %}{% if nav_active == 'subscribers' %}bg-indigo-500/20 text-white{% endif %}{% endblock %}">
+            {% include "components/icon.html" with name="users" size=16 class_extra="text-gray-400" %}
+            {% trans "Subscribers" %}
+          </a>
+
+          {% safe_url "campaigns:list" as campaigns_url %}
+          <a href="{{ campaigns_url }}"
+             class="flex items-center gap-2.5 px-2.5 py-2 text-[13.5px] rounded-md
+                    text-gray-200 hover:bg-white/5 transition-colors
+                    {% block nav_campaigns_class %}{% if nav_active == 'campaigns' %}bg-indigo-500/20 text-white{% endif %}{% endblock %}">
+            {% include "components/icon.html" with name="send" size=16 class_extra="text-gray-400" %}
+            {% trans "Campaigns" %}
+          </a>
+
+          {% safe_url "sequences:list" as sequences_url %}
+          <a href="{{ sequences_url }}"
+             class="flex items-center gap-2.5 px-2.5 py-2 text-[13.5px] rounded-md
+                    text-gray-200 hover:bg-white/5 transition-colors
+                    {% block nav_sequences_class %}{% if nav_active == 'sequences' %}bg-indigo-500/20 text-white{% endif %}{% endblock %}">
+            {% include "components/icon.html" with name="workflow" size=16 class_extra="text-gray-400" %}
+            {% trans "Sequences" %}
+          </a>
+
+          {% safe_url "templates_mgr:list" as templates_url %}
+          <a href="{{ templates_url }}"
+             class="flex items-center gap-2.5 px-2.5 py-2 text-[13.5px] rounded-md
+                    text-gray-200 hover:bg-white/5 transition-colors
+                    {% block nav_templates_class %}{% if nav_active == 'templates' %}bg-indigo-500/20 text-white{% endif %}{% endblock %}">
+            {% include "components/icon.html" with name="mail" size=16 class_extra="text-gray-400" %}
+            {% trans "Templates" %}
+          </a>
+        </div>
+
+        {# Insights section #}
+        <div class="px-2.5 pt-5 pb-2 text-[11px] uppercase tracking-[0.06em]
+                    text-gray-400 font-semibold">
+          {% trans "Insights" %}
+        </div>
+        <div class="flex flex-col gap-px">
+          {% safe_url "analytics:index" as analytics_url %}
+          <a href="{{ analytics_url }}"
+             class="flex items-center gap-2.5 px-2.5 py-2 text-[13.5px] rounded-md
+                    text-gray-200 hover:bg-white/5 transition-colors
+                    {% block nav_analytics_class %}{% if nav_active == 'analytics' %}bg-indigo-500/20 text-white{% endif %}{% endblock %}">
+            {% include "components/icon.html" with name="chart" size=16 class_extra="text-gray-400" %}
+            {% trans "Analytics" %}
+          </a>
+
+          {% safe_url "analytics:churn" as churn_url %}
+          <a href="{{ churn_url }}"
+             class="flex items-center gap-2.5 px-2.5 py-2 text-[13.5px] rounded-md
+                    text-gray-200 hover:bg-white/5 transition-colors
+                    {% block nav_churn_class %}{% if nav_active == 'churn' %}bg-indigo-500/20 text-white{% endif %}{% endblock %}">
+            {% include "components/icon.html" with name="pulse" size=16 class_extra="text-gray-400" %}
+            {% trans "Churn" %}
+          </a>
+        </div>
+
+        {# System section #}
+        <div class="px-2.5 pt-5 pb-2 text-[11px] uppercase tracking-[0.06em]
+                    text-gray-400 font-semibold">
+          {% trans "System" %}
+        </div>
+        <div class="flex flex-col gap-px">
+          {% safe_url "core:settings" as settings_url %}
+          <a href="{{ settings_url }}"
+             class="flex items-center gap-2.5 px-2.5 py-2 text-[13.5px] rounded-md
+                    text-gray-200 hover:bg-white/5 transition-colors
+                    {% block nav_settings_class %}{% if nav_active == 'settings' %}bg-indigo-500/20 text-white{% endif %}{% endblock %}">
+            {% include "components/icon.html" with name="cog" size=16 class_extra="text-gray-400" %}
+            {% trans "Settings" %}
+          </a>
+        </div>
+        {% endblock %}
+      </nav>
+
+      {# Sidebar footer — system status #}
+      <div class="mt-auto px-4 py-4 border-t border-white/[0.06]
+                  text-[12px] text-gray-400 flex items-center gap-2.5">
+        <span class="w-2 h-2 bg-emerald-500 rounded-full shadow-[0_0_0_3px_rgba(16,185,129,0.18)]"></span>
+        <div class="flex flex-col">
+          <span class="text-gray-200 text-[12.5px] font-medium">{% trans "All systems" %}</span>
+        </div>
+      </div>
+    </aside>
+
+    {# ── Main content area ─────────────────────────────────────── #}
+    <main class="min-w-0 bg-[#fafafa]" role="main">
+      {# Topbar #}
+      <header class="h-14 flex items-center px-7 border-b border-gray-200
+                     bg-white sticky top-0 z-30 gap-4">
+        {# Mobile hamburger toggle #}
+        <button class="lg:hidden p-1.5 -ml-1.5 rounded-md hover:bg-gray-100 text-gray-500"
+                aria-label="{% trans 'Toggle navigation' %}"
+                onclick="document.getElementById('sidebar').classList.remove('-translate-x-full');document.getElementById('sidebar-backdrop').classList.remove('hidden')">
+          {% include "components/icon.html" with name="filter" size=18 %}
+        </button>
+
+        {# Breadcrumb #}
+        <div class="text-[13px] text-gray-500 flex items-center gap-2">
+          <span>{{ settings.POSTINO_APP_NAME|default:"Postino" }}</span>
+          {% include "components/icon.html" with name="chevRight" size=12 %}
+          <span class="text-gray-900 font-medium flex items-center gap-2">{% block breadcrumb %}{% trans "Dashboard" %}{% endblock %}</span>
+        </div>
+
+        <div class="ml-auto flex items-center gap-2.5">
+          {# User avatar #}
+          <div class="hidden sm:flex items-center gap-2 text-[12.5px]">
+            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500
+                        text-white font-semibold text-[12px] flex items-center justify-center">
+              {{ request.user.username|make_list|first|default:"A"|upper }}
+            </div>
+            <div class="leading-tight">
+              <div class="font-medium">{{ request.user.get_full_name|default:request.user.username }}</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {# Content #}
+      <div id="main-content" class="max-w-[1280px] mx-auto px-7 py-7 pb-14">
+        {# Page header #}
+        {% block page_header %}
+        <div class="flex items-end gap-6 mb-6">
+          <div>
+            <h1 class="text-[22px] font-semibold tracking-tight m-0">
+              {% block page_title %}{% trans "Dashboard" %}{% endblock %}
+            </h1>
+            {% block page_subtitle %}{% endblock %}
+          </div>
+          <div class="ml-auto flex gap-2">
+            {% block page_actions %}{% endblock %}
+          </div>
+        </div>
+        {% endblock %}
+
+        {# Main content block #}
+        {% block content %}
+        <div class="text-gray-500 text-center py-20">
+          {% trans "Welcome to Postino. Select an item from the sidebar to begin." %}
+        </div>
+        {% endblock %}
+      </div>
+    </main>
+  </div>
+
+  {# Floating help button — each page provides content via help_title/help_body blocks #}
+  {% block help_widget %}{% endblock %}
+
+  {# Toast container for Django messages #}
+  {% if messages %}
+  <div id="toast-container" class="fixed top-4 right-4 flex flex-col gap-2 z-[200]">
+    {% for message in messages %}
+    <div class="bg-white border border-gray-200 rounded-lg px-3.5 py-3 min-w-[260px]
+                flex items-center gap-2.5 text-[13px] shadow-[0_8px_20px_rgba(0,0,0,0.06)]
+                animate-[slidein_200ms_ease]
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}border-l-[3px] border-l-emerald-500{% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}border-l-[3px] border-l-red-500{% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}border-l-[3px] border-l-amber-500{% endif %}">
+      <span class="{% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}text-emerald-500{% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}text-red-500{% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}text-amber-500{% else %}text-indigo-500{% endif %}">
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+          {% include "components/icon.html" with name="check" size=16 %}
+        {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+          {% include "components/icon.html" with name="warn" size=16 %}
+        {% else %}
+          {% include "components/icon.html" with name="info" size=16 %}
+        {% endif %}
+      </span>
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# Toast container for HTMX OOB swaps #}
+  <div id="toast-container-htmx" class="fixed top-4 right-4 flex flex-col gap-2 z-[200]"></div>
+
+  {# HTMX #}
+  <script src="{% static 'js/htmx.min.js' %}"></script>
+
+  {# Slide-in animation keyframes #}
+  <style>
+    @keyframes slidein {
+      from { transform: translateX(20px); opacity: 0; }
+      to { transform: none; opacity: 1; }
+    }
+  </style>
+
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,47 @@
+{% load i18n %}
+{# ── Floating contextual help button ──────────────────────────────────
+   Usage in page templates:
+     {% block help_widget %}
+     {% with help_title=_("Dashboard") %}
+     {% include "components/help_button.html" %}
+     {% endwith %}
+     {% endblock %}
+
+   The help_body content is passed via the calling block's HTML.
+   This component renders a "?" button and a <dialog> popover.
+#}
+{% if help_title %}
+<button onclick="document.getElementById('help-dialog').showModal()"
+        class="fixed bottom-6 right-6 z-50 w-10 h-10 rounded-full
+               bg-indigo-500 hover:bg-indigo-600 text-white shadow-lg
+               flex items-center justify-center text-lg font-semibold
+               transition-colors cursor-pointer"
+        aria-label="{% trans 'Help' %}">?</button>
+
+<dialog id="help-dialog"
+        class="fixed inset-0 m-auto max-w-md w-[calc(100%-2rem)] rounded-xl
+               border border-gray-200 shadow-2xl p-0 backdrop:bg-black/30">
+  <div class="px-6 pt-5 pb-4">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600
+                  flex items-center justify-center flex-shrink-0">
+        {% include "components/icon.html" with name="info" size=16 %}
+      </div>
+      <h3 class="text-base font-semibold text-gray-900 m-0 flex-1">{{ help_title }}</h3>
+      <button onclick="document.getElementById('help-dialog').close()"
+              class="text-gray-400 hover:text-gray-600">
+        {% include "components/icon.html" with name="x" size=18 %}
+      </button>
+    </div>
+    <div class="text-sm text-gray-600 leading-relaxed space-y-2 pl-11">
+      {{ help_body }}
+    </div>
+  </div>
+  <div class="px-6 py-3 bg-gray-50 border-t border-gray-100 rounded-b-xl">
+    <button onclick="document.getElementById('help-dialog').close()"
+            class="text-sm font-medium text-gray-700 hover:text-gray-900">
+      {% trans "Got it" %}
+    </button>
+  </div>
+</dialog>
+{% endif %}

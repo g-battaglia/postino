@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}
+  {% if is_edit %}{% trans "Edit Sequence" %}{% else %}{% trans "New Sequence" %}{% endif %}
+{% endblock %}
+{% block breadcrumb %}
+  <a href="{% url 'sequences:list' %}" class="hover:text-indigo-600">{% trans "Sequences" %}</a>
+  {% include "components/icon.html" with name="chevRight" size=12 %}
+  {% if is_edit %}{% trans "Edit" %}{% else %}{% trans "New" %}{% endif %}
+{% endblock %}
+{% block nav_sequences_class %}bg-indigo-500/20 text-white{% endblock %}
+
+{% block page_title %}
+  {% if is_edit %}
+    {% trans "Edit Sequence" %}
+  {% else %}
+    {% trans "New Sequence" %}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<form method="post" class="max-w-2xl">
+  {% csrf_token %}
+  <div class="bg-white border border-gray-200 rounded-[10px] p-6 space-y-4">
+    {% for field in form %}
+    <div>
+      <label for="{{ field.id_for_label }}" class="block text-[13px] font-medium text-gray-700 mb-1.5">
+        {{ field.label }}
+      </label>
+      {{ field.errors }}
+      {{ field }}
+      {% if field.help_text %}
+      <p class="text-[12px] text-gray-400 mt-1">{{ field.help_text }}</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="flex items-center gap-3 mt-5">
+    <button type="submit"
+            class="px-4 py-2 text-[13px] font-medium rounded-md bg-indigo-500 text-white
+                   hover:bg-indigo-600 transition-colors">
+      {% if is_edit %}{% trans "Save Changes" %}{% else %}{% trans "Create Sequence" %}{% endif %}
+    </button>
+    <a href="{% url 'sequences:list' %}"
+       class="px-4 py-2 text-[13px] font-medium rounded-md border border-gray-200 text-gray-600
+              hover:bg-gray-50 transition-colors">
+      {% trans "Cancel" %}
+    </a>
+  </div>
+</form>
+{% endblock %}

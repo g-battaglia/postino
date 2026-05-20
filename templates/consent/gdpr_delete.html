@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "GDPR Data Deletion" %}{% endblock %}
+
+{% block breadcrumb %}{% trans "Subscribers" %}{% endblock %}
+
+{% block nav_subscribers_class %}bg-indigo-500/20 text-white{% endblock %}
+
+{% block page_title %}{% trans "Delete subscriber data" %}{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto bg-white border border-red-200 rounded-[10px] p-6">
+  <div class="flex items-center gap-3 mb-4">
+    <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center text-red-600">
+      {% include "components/icon.html" with name="warn" size=18 %}
+    </div>
+    <h3 class="text-[15px] font-semibold text-red-700 m-0">{% trans "This action cannot be undone" %}</h3>
+  </div>
+
+  <p class="text-[13px] text-gray-600 mb-4">
+    {% blocktrans with email=subscriber.email %}This will permanently delete all personal data for <strong>{{ email }}</strong> (GDPR Art. 17). The subscriber will be set to "deleted" status and personal fields will be blanked.{% endblocktrans %}
+  </p>
+
+  <dl class="text-[13px] mb-6">
+    <dt class="text-gray-500">{% trans "Email" %}</dt>
+    <dd class="font-medium mb-2">{{ subscriber.email }}</dd>
+    <dt class="text-gray-500">{% trans "Status" %}</dt>
+    <dd class="font-medium mb-2">{{ subscriber.status }}</dd>
+    <dt class="text-gray-500">{% trans "Created" %}</dt>
+    <dd class="font-medium">{{ subscriber.created_at }}</dd>
+  </dl>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="flex gap-3">
+      <button type="submit"
+              class="px-4 py-2 text-[13px] font-medium rounded-md bg-red-500 text-white hover:bg-red-600 transition-colors">
+        {% trans "Delete all data" %}
+      </button>
+      <a href="{% url 'subscribers:detail' subscriber_id=subscriber.id %}"
+         class="px-4 py-2 text-[13px] font-medium rounded-md border border-gray-200 hover:bg-gray-50 transition-colors">
+        {% trans "Cancel" %}
+      </a>
+    </div>
+  </form>
+</div>
+{% endblock %}
