@@ -21,7 +21,7 @@
   <a href="{% url 'sequences:edit' sequence_id=sequence.pk %}"
      class="inline-flex items-center gap-1.5 px-3 py-[7px] text-[13px] font-medium rounded-md
             border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
-    {% include "components/icon.html" with name="pencil" size=14 %}
+    {% include "components/icon.html" with name="edit" size=14 %}
     {% trans "Edit" %}
   </a>
 {% endblock %}
